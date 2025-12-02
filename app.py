@@ -195,11 +195,11 @@ Bei Fragen meldet euch gern:
 
         # Größe: bei Paketen ausblenden (optional)
         if is_package:
-            st.info("Du hast ein Paket gewählt. Bitte gib hier die Details an (z. B. Größen je Teil, Name/Nr., Farbe):")
+            st.info("Du hast ein Paket gewählt. Bitte gib hier die Details an (Größen je Teil):")
             package_details = st.text_area(
                 "Paket-Details",
                 value=st.session_state.package_details_input,
-                placeholder="z. B. T-Shirt L, Hose M; Name: Meyer, Nr.: 12",
+                placeholder="z. B. T-Shirt L, Hose M",
                 key="package_details_textarea_in_form"
             )
             size = "-"  # Dummy/optional bei Paket
