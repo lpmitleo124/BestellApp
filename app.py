@@ -173,7 +173,19 @@ Bei Fragen meldet euch gern:
         nummer = st.text_input("Rückennummer oder Initialen")
 
         artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
-        size = st.selectbox("Größe", SIZES)
+        is_paket = artikel.lower().startswith("paket")
+
+        # Wenn Paket gewählt ist: freies Textfeld für Bestandteile + Größen anzeigen
+        if is_paket:
+            size_or_details = st.text_area(
+                "Paket-Bestandteile + Größen (Pflichtfeld)",
+                placeholder="z.B. Trikot M, Hose L, Stutzen 43–46",
+                help="Bitte alle Bestandteile des Pakets mit jeweiliger Größe eintragen."
+            )
+        else:
+            size_or_details = st.selectbox("Größe", SIZES)
+
+        #size = st.selectbox("Größe", SIZES)
         qty = st.number_input("Menge", 1, step=1)
 
         submit = st.form_submit_button("Zum Warenkorb hinzufügen")
