@@ -7,9 +7,6 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors as rl_colors
 import os
-import streamlit as st
-import gspread
-from google.oauth2.service_account import Credentials
 
 # Optional Google Sheets
 try:
