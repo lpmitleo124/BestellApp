@@ -7,11 +7,14 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors as rl_colors
 import os
+import streamlit as st
+import gspread
+from google.oauth2.service_account import Credentials
 
 # Optional Google Sheets
 try:
     import gspread
-    from oauth2client.service_account import ServiceAccountCredentials
+   from google.oauth2.service_account import Credentials
     GS_AVAILABLE = True
 except Exception:
     GS_AVAILABLE = False
@@ -39,8 +42,6 @@ PRICES = {
     "Paket 8": (155, 170)
 }
 
-COLORS = ["Schwarz", "Weiß", "Orange", "Rot"]
-
 SIZES = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"]
 
 # ---------------------------
@@ -56,19 +57,18 @@ def get_price_for_size(artikel, size):
     return base
 
 def connect_to_sheet(sheet_name="Teamwear_Bestellungen"):
-    """Try to connect to Google Sheets using google_credentials.json in working directory.
-    Returns a sheet object (gspread) or raises an exception."""
-    creds_file = "google_credentials.json"
-    if not GS_AVAILABLE:
-        raise RuntimeError("gspread / oauth2client not installed in environment.")
-    if not os.path.exists(creds_file):
-        raise FileNotFoundError(f"{creds_file} not found. Place your service account JSON in the app folder.")
-    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name(creds_file, scope)
-    client = gspread.authorize(creds)
+    creds_info = st.secrets["gcp_service_account"]
+
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+
+    credentials = Credentials.from_service_account_info(creds_info, scopes=scopes)
+    client = gspread.authorize(credentials)
+
     sheet = client.open(sheet_name).sheet1
     return sheet
-
 def append_orders_to_sheet(rows, sheet_name="Teamwear_Bestellungen"):
     try:
         sheet = connect_to_sheet(sheet_name)
@@ -149,7 +149,6 @@ with col1:
         nummer = st.text_input("Rückennummer (optional)", key='num_input')
         artikel = st.selectbox("Artikel oder Paket", list(PRICES.keys()), key='artikel_select')
         size = st.selectbox("Größe", SIZES, index=2, key='size_select')
-        color = st.selectbox("Farbe", COLORS, index=0, key='color_select')
         qty = st.number_input("Menge", min_value=1, value=1, step=1, key='qty_input')
         submitted = st.form_submit_button("In den Warenkorb legen")
         if submitted:
