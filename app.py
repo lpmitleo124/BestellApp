@@ -163,7 +163,7 @@ with left:
     with st.form("add_item", clear_on_submit=True):
         name = st.text_input("Name Spieler*in")
         team = st.text_input("Team / Mannschaft")
-        nummer = st.text_input("Rückennummer (optional)")
+        nummer = st.text_input("Rückennummer oder Initialen")
 
         artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
         size = st.selectbox("Größe", SIZES)
