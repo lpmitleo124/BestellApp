@@ -250,7 +250,7 @@ with right:
 
 st.markdown("---")
 st.header("📊 Admin – Bestellübersicht")
-
+'''
 # ADMIN VIEW
 try:
     sheet = connect_to_sheet()
@@ -264,4 +264,4 @@ except:
         st.subheader("Lokale Bestellungen")
         st.dataframe(df_local)
     else:
-        st.info("Noch keine Bestellungen vorhanden.")
+        st.info("Noch keine Bestellungen vorhanden.")'''
