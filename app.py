@@ -161,10 +161,9 @@ with left:
     st.header("Neue Bestellung aufgeben")
     st.markdown("""
 ### Anleitung
-
-    - Tragt hier alle Artikel ein, die ihr bestellen möchtet. Bestätigt jeden Artikel mit Enter.
-    - Seid ihr fertig, klickt auf „Bestellung absenden“.
-    - Anschließend überweist mir bitte den fälligen Betrag.
+Tragt hier alle Artikel ein, die ihr bestellen möchtet. Bestätigt jeden Artikel mit Enter.
+Seid ihr fertig, klickt auf „Bestellung absenden“.
+Anschließend überweist mir bitte den fälligen Betrag.
 
 Bei Fragen meldet euch gern:
 **Leonard Kötter, +49 173 6121352** 
