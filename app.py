@@ -1,4 +1,3 @@
-# Streamlit BestellApp - Münster Phoenix
 import streamlit as st
 import pandas as pd
 from io import BytesIO
@@ -37,9 +36,11 @@ PRICES = {
     "Paket 8": (155, 170),
 }
 
-
 # AVAILABLE SIZES
 SIZES = ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"]
+
+# Detect package items
+PACKAGE_KEYS = [k for k in PRICES.keys() if k.lower().startswith("paket")]
 
 
 # ---------------------------
@@ -85,7 +86,7 @@ def append_orders_to_csv(rows, path="orders_local.csv"):
         if not exists:
             w.writerow([
                 "Timestamp", "Name", "Team", "Nummer",
-                "Artikel", "Größe", "Farbe", "Menge",
+                "Artikel", "Größe", "Paket-Details", "Menge",
                 "Einzelpreis", "Summe"
             ])
         for r in rows:
@@ -112,8 +113,11 @@ def generate_invoice_pdf(cart, customer_name, team):
     total = 0
 
     for item in cart:
+        artikel_label = item["artikel"]
+        if item.get("package_details"):
+            artikel_label += f" – {item['package_details']}"
         data.append([
-            item["artikel"],
+            artikel_label,
             item["size"],
             item["qty"],
             f"{item['price']:.2f}",
@@ -123,7 +127,7 @@ def generate_invoice_pdf(cart, customer_name, team):
 
     data.append(["", "", "", "", "Gesamt", f"{total:.2f} €"])
 
-    table = Table(data, colWidths=[140, 50, 60, 55, 90, 90])
+    table = Table(data, colWidths=[200, 60, 60, 70, 90, 90])
     table.setStyle(TableStyle([
         ("GRID", (0, 0), (-1, -1), 0.5, rl_colors.black),
         ("BACKGROUND", (0, 0), (-1, 0), rl_colors.lightgrey),
@@ -135,7 +139,7 @@ def generate_invoice_pdf(cart, customer_name, team):
     story.append(Spacer(1, 20))
 
     # Payment Info
-    story.append(Paragraph("Zahlungsinformationen:", styles["Heading3"]))
+    story.append(Paragraph("Zahlungsinformationen:", styles["Heading3"])))
     story.append(Paragraph("PayPal: <b>https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr</b>", styles["Normal"]))
 
     doc.build(story)
@@ -150,9 +154,11 @@ st.title("🔥 Münster Phoenix – Teamwear Bestellsystem")
 
 if "cart" not in st.session_state:
     st.session_state.cart = []
+# default for optional package details
+if "package_details_input" not in st.session_state:
+    st.session_state.package_details_input = ""
 
 left, right = st.columns([1, 2])
-
 
 # LEFT: ADD ITEM
 with left:
@@ -166,6 +172,7 @@ Anschließend überweist mir bitte den fälligen Betrag.
 Bei Fragen meldet euch gern:
 **Leonard Kötter, +49 173 6121352** 
 """)
+
     # Artikel-Auswahl AUßERHALB des Formulars, damit dynamische Felder sofort erscheinen
     artikel_selected = st.selectbox("Artikel / Paket", list(PRICES.keys()), key="artikel_select")
     is_package = artikel_selected in PACKAGE_KEYS
@@ -226,9 +233,24 @@ with right:
         st.info("Noch keine Artikel im Warenkorb.")
     else:
         df = pd.DataFrame(cart)
+        # Reihenfolge der Spalten für bessere Lesbarkeit
+        cols_order = ["name", "team", "nummer", "artikel", "size", "package_details", "qty", "price", "line_total"]
+        df = df[cols_order]
+        df = df.rename(columns={
+            "name": "Name",
+            "team": "Team",
+            "nummer": "Nummer",
+            "artikel": "Artikel",
+            "size": "Größe",
+            "package_details": "Paket-Details",
+            "qty": "Menge",
+            "price": "Einzelpreis",
+            "line_total": "Summe"
+        })
+
         st.dataframe(df, use_container_width=True)
 
-        total = df["line_total"].sum()
+        total = df["Summe"].sum()
         st.subheader(f"Gesamtbetrag: {total:.2f} €")
 
         # CSV Offer
@@ -237,7 +259,9 @@ with right:
 
         # PDF Invoice
         if st.button("Rechnung als PDF erstellen"):
-            pdf = generate_invoice_pdf(cart, df["name"].iloc[0], df["team"].iloc[0])
+            # für PDF brauchen wir die Rohdaten (mit keys)
+            raw_df = pd.DataFrame(cart)
+            pdf = generate_invoice_pdf(cart, raw_df["name"].iloc[0], raw_df["team"].iloc[0])
             st.download_button("PDF herunterladen", pdf, "Rechnung.pdf", mime="application/pdf")
 
         st.markdown("---")
@@ -250,7 +274,7 @@ with right:
             for i in cart:
                 rows.append([
                     ts, i["name"], i["team"], i["nummer"],
-                    i["artikel"], i["size"],
+                    i["artikel"], i["size"], i.get("package_details", ""),
                     i["qty"], i["price"], i["line_total"],
                 ])
 
@@ -258,6 +282,7 @@ with right:
             if ok:
                 st.success("Erfolgreich an Google Sheets übertragen!")
                 st.session_state.cart = []
+                st.session_state.package_details_input = ""
             else:
                 st.error(f"Google Sheets Fehler: {err}")
 
@@ -268,12 +293,13 @@ with right:
             for i in cart:
                 rows.append([
                     ts, i["name"], i["team"], i["nummer"],
-                    i["artikel"], i["size"],
+                    i["artikel"], i["size"], i.get("package_details", ""),
                     i["qty"], i["price"], i["line_total"],
                 ])
             append_orders_to_csv(rows)
             st.success("Lokal gespeichert (orders_local.csv).")
             st.session_state.cart = []
+            st.session_state.package_details_input = ""
 
 st.markdown("""
 ### Zahlungsinformationen
