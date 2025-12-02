@@ -161,7 +161,7 @@ with left:
     st.header("Neue Bestellung aufgeben")
     st.markdown("""
 ### Anleitung
-Tragt hier alle Artikel ein, die ihr bestellen möchtet. Bestätigt jeden Artikel mit Enter.
+Tragt hier alle Artikel ein, die ihr bestellen möchtet. Ihr müsst für jeden Artikel alles Neu eintragen. Geht um die Übersichtlichkeit. 
 Seid ihr fertig, klickt auf „Bestellung absenden“.
 Anschließend überweist mir bitte den fälligen Betrag.
 
