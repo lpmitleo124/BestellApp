@@ -166,8 +166,7 @@ Anschließend überweist mir bitte den fälligen Betrag.
 Bei Fragen meldet euch gern:
 **Leonard Kötter, +49 173 6121352** 
 """)
-
-        with st.form("add_item", clear_on_submit=True):
+    with st.form("add_item", clear_on_submit=True):
         name = st.text_input("Name Spieler*in")
         team = st.text_input("Team / Mannschaft")
         nummer = st.text_input("Rückennummer (optional)")
