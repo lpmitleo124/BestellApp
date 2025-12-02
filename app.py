@@ -247,10 +247,10 @@ with right:
             append_orders_to_csv(rows)
             st.success("Lokal gespeichert (orders_local.csv).")
             st.session_state.cart = []
-
+'''
 st.markdown("---")
 st.header("📊 Admin – Bestellübersicht")
-'''
+
 # ADMIN VIEW
 try:
     sheet = connect_to_sheet()
