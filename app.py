@@ -1,3 +1,4 @@
+# Streamlit BestellApp - Münster Phoenix
 import streamlit as st
 import pandas as pd
 from io import BytesIO
@@ -118,21 +119,22 @@ def generate_invoice_pdf(cart, customer_name, team):
             artikel_label += f" – {item['package_details']}"
         data.append([
             artikel_label,
-            item["size"],
+            item.get("size", ""),
             item["qty"],
             f"{item['price']:.2f}",
             f"{item['line_total']:.2f}",
         ])
         total += item["line_total"]
 
-    data.append(["", "", "", "", "Gesamt", f"{total:.2f} €"])
+    # Footer row with 5 columns to match header
+    data.append(["", "", "", "Gesamt", f"{total:.2f} €"])
 
-    table = Table(data, colWidths=[200, 60, 60, 70, 90, 90])
+    table = Table(data, colWidths=[220, 60, 60, 80, 100])
     table.setStyle(TableStyle([
         ("GRID", (0, 0), (-1, -1), 0.5, rl_colors.black),
         ("BACKGROUND", (0, 0), (-1, 0), rl_colors.lightgrey),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("ALIGN", (3, 1), (-1, -1), "RIGHT"),
+        ("ALIGN", (2, 1), (-1, -1), "RIGHT"),
     ]))
 
     story.append(table)
@@ -154,9 +156,10 @@ st.title("🔥 Münster Phoenix – Teamwear Bestellsystem")
 
 if "cart" not in st.session_state:
     st.session_state.cart = []
-# default for optional package details
 if "package_details_input" not in st.session_state:
     st.session_state.package_details_input = ""
+if "artikel_selected" not in st.session_state:
+    st.session_state.artikel_selected = list(PRICES.keys())[0]
 
 left, right = st.columns([1, 2])
 
@@ -173,29 +176,35 @@ Bei Fragen meldet euch gern:
 **Leonard Kötter, +49 173 6121352** 
 """)
 
-    # Artikel-Auswahl AUßERHALB des Formulars, damit dynamische Felder sofort erscheinen
-    artikel_selected = st.selectbox("Artikel / Paket", list(PRICES.keys()), key="artikel_select")
-    is_package = artikel_selected in PACKAGE_KEYS
+    # Artikel-Auswahl AUSSERHALB des Formulars, um dynamische Felder sofort anzeigen zu können
+    st.session_state.artikel_selected = st.selectbox(
+        "Artikel / Paket",
+        list(PRICES.keys()),
+        index=list(PRICES.keys()).index(st.session_state.artikel_selected)
+        if st.session_state.artikel_selected in PRICES
+        else 0,
+        key="artikel_select"
+    )
+    is_package = st.session_state.artikel_selected in PACKAGE_KEYS
 
-    # Zusätzliche Eingabe bei Paketen (erscheint sofort)
-    if is_package:
-        st.info("Du hast ein Paket gewählt. Bitte gib hier die Details an (z. B. Größen je Teil, Name/Nr., Farbe):")
-        st.session_state.package_details_input = st.text_area(
-            "Paket-Details",
-            value=st.session_state.package_details_input,
-            placeholder="z. B. T-Shirt L, Hose M; Name: Meyer, Nr.: 12",
-            key="package_details_textarea"
-        )
-
+    # Formular: Paket-Details ABFRAGE IST HIER DRIN
     with st.form("add_item", clear_on_submit=True):
         name = st.text_input("Name Spieler*in")
         team = st.text_input("Team / Mannschaft")
         nummer = st.text_input("Rückennummer (optional)")
 
-        # Größe: bei Paketen optional/ausgeblendet
+        # Größe: bei Paketen ausblenden (optional)
         if is_package:
-            size = st.text_input("Größe (optional, bei Paket)", value="", placeholder="kann leer bleiben")
+            st.info("Du hast ein Paket gewählt. Bitte gib hier die Details an (z. B. Größen je Teil, Name/Nr., Farbe):")
+            package_details = st.text_area(
+                "Paket-Details",
+                value=st.session_state.package_details_input,
+                placeholder="z. B. T-Shirt L, Hose M; Name: Meyer, Nr.: 12",
+                key="package_details_textarea_in_form"
+            )
+            size = "-"  # Dummy/optional bei Paket
         else:
+            package_details = ""
             size = st.selectbox("Größe", SIZES)
 
         qty = st.number_input("Menge", 1, step=1)
@@ -203,11 +212,10 @@ Bei Fragen meldet euch gern:
         submit = st.form_submit_button("Zum Warenkorb hinzufügen")
 
         if submit:
-            artikel = artikel_selected
-            package_details = st.session_state.package_details_input if is_package else ""
-            size_value = size if size else ("-" if is_package else "")
+            artikel = st.session_state.artikel_selected
 
-            price = get_price_for_size(artikel, size_value)
+            # Preis bestimmen (bei Paket immer Basispreis)
+            price = get_price_for_size(artikel, size)
             total_price = price * qty
 
             st.session_state.cart.append({
@@ -215,13 +223,15 @@ Bei Fragen meldet euch gern:
                 "team": team,
                 "nummer": nummer,
                 "artikel": artikel,
-                "size": size_value,
+                "size": size,
                 "package_details": package_details,
                 "qty": qty,
                 "price": price,
                 "line_total": total_price,
             })
 
+            # Paket-Details in Session zurücksetzen nach Hinzufügen
+            st.session_state.package_details_input = ""
             st.success(f"{qty}× {artikel} hinzugefügt")
 
 # RIGHT: CART
@@ -235,6 +245,10 @@ with right:
         df = pd.DataFrame(cart)
         # Reihenfolge der Spalten für bessere Lesbarkeit
         cols_order = ["name", "team", "nummer", "artikel", "size", "package_details", "qty", "price", "line_total"]
+        # Falls ältere Items keine package_details haben
+        for c in cols_order:
+            if c not in df.columns:
+                df[c] = ""
         df = df[cols_order]
         df = df.rename(columns={
             "name": "Name",
@@ -259,7 +273,6 @@ with right:
 
         # PDF Invoice
         if st.button("Rechnung als PDF erstellen"):
-            # für PDF brauchen wir die Rohdaten (mit keys)
             raw_df = pd.DataFrame(cart)
             pdf = generate_invoice_pdf(cart, raw_df["name"].iloc[0], raw_df["team"].iloc[0])
             st.download_button("PDF herunterladen", pdf, "Rechnung.pdf", mime="application/pdf")
@@ -274,7 +287,7 @@ with right:
             for i in cart:
                 rows.append([
                     ts, i["name"], i["team"], i["nummer"],
-                    i["artikel"], i["size"], i.get("package_details", ""),
+                    i["artikel"], i.get("size", ""), i.get("package_details", ""),
                     i["qty"], i["price"], i["line_total"],
                 ])
 
@@ -282,7 +295,6 @@ with right:
             if ok:
                 st.success("Erfolgreich an Google Sheets übertragen!")
                 st.session_state.cart = []
-                st.session_state.package_details_input = ""
             else:
                 st.error(f"Google Sheets Fehler: {err}")
 
@@ -293,13 +305,12 @@ with right:
             for i in cart:
                 rows.append([
                     ts, i["name"], i["team"], i["nummer"],
-                    i["artikel"], i["size"], i.get("package_details", ""),
+                    i["artikel"], i.get("size", ""), i.get("package_details", ""),
                     i["qty"], i["price"], i["line_total"],
                 ])
             append_orders_to_csv(rows)
             st.success("Lokal gespeichert (orders_local.csv).")
             st.session_state.cart = []
-            st.session_state.package_details_input = ""
 
 st.markdown("""
 ### Zahlungsinformationen
