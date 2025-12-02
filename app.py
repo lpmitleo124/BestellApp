@@ -139,7 +139,7 @@ def generate_invoice_pdf(cart, customer_name, team):
     story.append(Spacer(1, 20))
 
     # Payment Info
-    story.append(Paragraph("Zahlungsinformationen:", styles["Heading3"])))
+    story.append(Paragraph("Zahlungsinformationen:", styles["Heading3"]))
     story.append(Paragraph("PayPal: <b>https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr</b>", styles["Normal"]))
 
     doc.build(story)
