@@ -1,4 +1,3 @@
-# Streamlit BestellApp - Münster Phoenix
 import streamlit as st
 import pandas as pd
 from io import BytesIO
@@ -47,9 +46,19 @@ PACKAGE_KEYS = [k for k in PRICES.keys() if k.lower().startswith("paket")]
 # ---------------------------
 # HELPERS
 # ---------------------------
+def normalize_size(size: str) -> str:
+    """Normalisiert Größen inkl. Synonyme (XXXL->3XL, etc.)."""
+    if not size:
+        return ""
+    s = str(size).strip().upper().replace(" ", "")
+    synonyms = {"XXXL": "3XL", "XXXXL": "4XL", "XXXXXL": "5XL"}
+    return synonyms.get(s, s)
+
+
 def get_price_for_size(artikel, size):
     base, xxl = PRICES[artikel]
-    return xxl if size in ["3XL", "4XL", "5XL"] else base
+    s = normalize_size(size)
+    return xxl if s in {"3XL", "4XL", "5XL"} else base
 
 
 def connect_to_sheet(sheet_name="Teamwear_Bestellungen"):
@@ -126,7 +135,6 @@ def generate_invoice_pdf(cart, customer_name, team):
         ])
         total += item["line_total"]
 
-    # Footer row with 5 columns to match header
     data.append(["", "", "", "Gesamt", f"{total:.2f} €"])
 
     table = Table(data, colWidths=[220, 60, 60, 80, 100])
@@ -176,7 +184,7 @@ Bei Fragen meldet euch gern:
 **Leonard Kötter, +49 173 6121352** 
 """)
 
-    # Artikel-Auswahl AUSSERHALB des Formulars, um dynamische Felder sofort anzeigen zu können
+    # Artikel-Auswahl außerhalb des Formulars für sofortige Anzeige der dynamischen Felder
     st.session_state.artikel_selected = st.selectbox(
         "Artikel / Paket",
         list(PRICES.keys()),
@@ -187,22 +195,26 @@ Bei Fragen meldet euch gern:
     )
     is_package = st.session_state.artikel_selected in PACKAGE_KEYS
 
-    # Formular: Paket-Details ABFRAGE IST HIER DRIN
+    # Formular mit Paket-Abfrage IN der normalen Abfrage
     with st.form("add_item", clear_on_submit=True):
         name = st.text_input("Name Spieler*in")
         team = st.text_input("Team / Mannschaft")
         nummer = st.text_input("Rückennummer (optional)")
 
-        # Größe: bei Paketen ausblenden (optional)
         if is_package:
-            st.info("Du hast ein Paket gewählt. Bitte gib hier die Details an (Größen je Teil):")
+            # Paket: Größe als freier Text (für 3XL/4XL/5XL oder XXXL/XXXXL/XXXXXL)
+            size_input = st.text_input(
+                "Größe (Paket)",
+                value="",
+                placeholder="z. B. M oder 3XL/XXXL"
+            )
+            st.info("Du hast ein Paket gewählt. Bitte gib hier die Details an (z. B. Inhalte, weitere Größen, Name/Nr., Farbe):")
             package_details = st.text_area(
                 "Paket-Details",
                 value=st.session_state.package_details_input,
-                placeholder="z. B. T-Shirt L, Hose M",
-                key="package_details_textarea_in_form"
+                placeholder="z. B. T-Shirt L, Hose M; Name: Meyer, Nr.: 12"
             )
-            size = "-"  # Dummy/optional bei Paket
+            size = size_input  # speichern, wird für Preisnormalisierung genutzt
         else:
             package_details = ""
             size = st.selectbox("Größe", SIZES)
@@ -214,7 +226,7 @@ Bei Fragen meldet euch gern:
         if submit:
             artikel = st.session_state.artikel_selected
 
-            # Preis bestimmen (bei Paket immer Basispreis)
+            # Preis mit XL-Logik inkl. Synonyme (XXXL/XXXXL/XXXXXL)
             price = get_price_for_size(artikel, size)
             total_price = price * qty
 
@@ -223,14 +235,13 @@ Bei Fragen meldet euch gern:
                 "team": team,
                 "nummer": nummer,
                 "artikel": artikel,
-                "size": size,
+                "size": normalize_size(size),  # normalisiert speichern
                 "package_details": package_details,
                 "qty": qty,
                 "price": price,
                 "line_total": total_price,
             })
 
-            # Paket-Details in Session zurücksetzen nach Hinzufügen
             st.session_state.package_details_input = ""
             st.success(f"{qty}× {artikel} hinzugefügt")
 
@@ -243,9 +254,7 @@ with right:
         st.info("Noch keine Artikel im Warenkorb.")
     else:
         df = pd.DataFrame(cart)
-        # Reihenfolge der Spalten für bessere Lesbarkeit
         cols_order = ["name", "team", "nummer", "artikel", "size", "package_details", "qty", "price", "line_total"]
-        # Falls ältere Items keine package_details haben
         for c in cols_order:
             if c not in df.columns:
                 df[c] = ""
