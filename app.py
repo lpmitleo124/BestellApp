@@ -166,19 +166,41 @@ Anschließend überweist mir bitte den fälligen Betrag.
 Bei Fragen meldet euch gern:
 **Leonard Kötter, +49 173 6121352** 
 """)
+    # Artikel-Auswahl AUßERHALB des Formulars, damit dynamische Felder sofort erscheinen
+    artikel_selected = st.selectbox("Artikel / Paket", list(PRICES.keys()), key="artikel_select")
+    is_package = artikel_selected in PACKAGE_KEYS
+
+    # Zusätzliche Eingabe bei Paketen (erscheint sofort)
+    if is_package:
+        st.info("Du hast ein Paket gewählt. Bitte gib hier die Details an (z. B. Größen je Teil, Name/Nr., Farbe):")
+        st.session_state.package_details_input = st.text_area(
+            "Paket-Details",
+            value=st.session_state.package_details_input,
+            placeholder="z. B. T-Shirt L, Hose M; Name: Meyer, Nr.: 12",
+            key="package_details_textarea"
+        )
+
     with st.form("add_item", clear_on_submit=True):
         name = st.text_input("Name Spieler*in")
         team = st.text_input("Team / Mannschaft")
         nummer = st.text_input("Rückennummer (optional)")
 
-        artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
-        size = st.selectbox("Größe", SIZES)
+        # Größe: bei Paketen optional/ausgeblendet
+        if is_package:
+            size = st.text_input("Größe (optional, bei Paket)", value="", placeholder="kann leer bleiben")
+        else:
+            size = st.selectbox("Größe", SIZES)
+
         qty = st.number_input("Menge", 1, step=1)
 
         submit = st.form_submit_button("Zum Warenkorb hinzufügen")
 
         if submit:
-            price = get_price_for_size(artikel, size)
+            artikel = artikel_selected
+            package_details = st.session_state.package_details_input if is_package else ""
+            size_value = size if size else ("-" if is_package else "")
+
+            price = get_price_for_size(artikel, size_value)
             total_price = price * qty
 
             st.session_state.cart.append({
@@ -186,8 +208,8 @@ Bei Fragen meldet euch gern:
                 "team": team,
                 "nummer": nummer,
                 "artikel": artikel,
-                "size": size,
-
+                "size": size_value,
+                "package_details": package_details,
                 "qty": qty,
                 "price": price,
                 "line_total": total_price,
