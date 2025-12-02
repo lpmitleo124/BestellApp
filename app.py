@@ -158,7 +158,17 @@ left, right = st.columns([1, 2])
 
 # LEFT: ADD ITEM
 with left:
-    st.header("Neue Position hinzufügen")
+    st.header("Neue Bestellung aufgeben")
+    st.markdown("""
+### Anleitung
+
+    - Tragt hier alle Artikel ein, die ihr bestellen möchtet. Bestätigt jeden Artikel mit Enter.
+    - Seid ihr fertig, klickt auf „Bestellung absenden“.
+    - Anschließend überweist mir bitte den fälligen Betrag.
+
+Bei Fragen meldet euch gern:
+**Leonard Kötter, +49 173 6121352** 
+""")
 
     with st.form("add_item", clear_on_submit=True):
         name = st.text_input("Name Spieler*in")
@@ -216,7 +226,7 @@ with right:
         st.markdown("---")
 
         # SEND TO GOOGLE SHEETS
-        if st.button("Bestellung an Google Sheets senden"):
+        if st.button("Bestellung absenden"):
             rows = []
             ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
