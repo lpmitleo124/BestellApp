@@ -136,9 +136,7 @@ def generate_invoice_pdf(cart, customer_name, team):
 
     # Payment Info
     story.append(Paragraph("Zahlungsinformationen:", styles["Heading3"]))
-    story.append(Paragraph("PayPal: <b>paypal.me/muensterphoenix</b>", styles["Normal"]))
-    story.append(Paragraph("IBAN: <b>DE12 3456 7890 1234 5678 00</b>", styles["Normal"]))
-    story.append(Paragraph("Verwendungszweck: <b>Teamwear Bestellung</b>", styles["Normal"]))
+    story.append(Paragraph("PayPal: <b>https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr</b>", styles["Normal"]))
 
     doc.build(story)
     return buffer.getvalue()
@@ -162,7 +160,7 @@ with left:
     st.markdown("""
 ### Anleitung
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. Ihr müsst für jeden Artikel alles Neu eintragen. Geht um die Übersichtlichkeit. 
-Seid ihr fertig, klickt auf „Bestellung absenden“.
+Seid ihr fertig, dann klickt auf „Bestellung absenden“.
 Anschließend überweist mir bitte den fälligen Betrag.
 
 Bei Fragen meldet euch gern:
