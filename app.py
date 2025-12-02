@@ -248,3 +248,10 @@ with right:
             st.success("Lokal gespeichert (orders_local.csv).")
             st.session_state.cart = []
 
+st.markdown("""
+### Zahlungsinformationen
+💳 **PayPal:** [https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr](https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr)   
+Verwendungszweck: **Teamwear Bestellung + Name eintragen**
+
+Sollte was schieflaufen oder ihr besitzt kein Paypal bitt schreibt mich Leonard Kötter (Tel.: 01736121352) an und wir finden eine Lösung
+""")
