@@ -170,7 +170,7 @@ Bei Fragen meldet euch gern:
     with st.form("add_item", clear_on_submit=True):
         name = st.text_input("Name Spieler*in")
         team = st.text_input("Team / Mannschaft")
-        nummer = st.text_input("Rückennummer oder Initialen")
+        nummer = st.text_input("Rückennummer (optional)")
 
         artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
         is_paket = artikel.lower().startswith("paket")
@@ -185,29 +185,36 @@ Bei Fragen meldet euch gern:
         else:
             size_or_details = st.selectbox("Größe", SIZES)
 
-        #size = st.selectbox("Größe", SIZES)
         qty = st.number_input("Menge", 1, step=1)
 
         submit = st.form_submit_button("Zum Warenkorb hinzufügen")
 
         if submit:
-            price = get_price_for_size(artikel, size)
-            total_price = price * qty
+            # Validierung: Bei Paket müssen Details zwingend ausgefüllt werden
+            if is_paket and (not size_or_details or not str(size_or_details).strip()):
+                st.error("Bitte die Paket-Bestandteile und Größen eintragen.")
+            else:
+                # Für Pakete wird immer der Basispreis genutzt (kein automatischer XXL-Aufschlag)
+                price = get_price_for_size(artikel, "BASE" if is_paket else size_or_details)
+                total_price = price * qty
 
-            st.session_state.cart.append({
-                "name": name,
-                "team": team,
-                "nummer": nummer,
-                "artikel": artikel,
-                "size": size,
+                st.session_state.cart.append({
+                    "name": name,
+                    "team": team,
+                    "nummer": nummer,
+                    "artikel": artikel,
+                    # Für Pakete speichern wir die eingegebenen Details im Feld "Größe",
+                    # damit die Infos in Tabelle, PDF und Export sichtbar sind.
+                    "size": str(size_or_details).strip() if is_paket else size_or_details,
+                    "qty": qty,
+                    "price": price,
+                    "line_total": total_price,
+                })
 
-                "qty": qty,
-                "price": price,
-                "line_total": total_price,
-            })
-
-            st.success(f"{qty}× {artikel} hinzugefügt")
-
+                added_text = f"{qty}× {artikel} hinzugefügt"
+                if is_paket:
+                    added_text += " (Details erfasst)"
+                st.success(added_text)
 
 # RIGHT: CART
 with right:
