@@ -120,6 +120,10 @@ def generate_invoice_pdf(cart, customer_name, team, filename=None):
     table.setStyle(tbl_style)
     story.append(table)
     story.append(Spacer(1,12))
+    story.append(Paragraph("Zahlungsinformationen:", styles['Heading3']))
+    story.append(Paragraph("PayPal: <b>https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr</b>", styles['Normal']))
+    story.append(Spacer(1, 12))
+
     story.append(Paragraph("Vielen Dank für Ihre Bestellung!", styles['Normal']))
 
     doc.build(story)
