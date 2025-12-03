@@ -160,14 +160,13 @@ left, right = st.columns([1, 2])
 # LEFT: ADD ITEM
 with left:
     st.header("Neue Bestellung aufgeben")
-    st.markdown("""
+
+    st.markdown(
+        """
 ### Anleitung
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
-<span style="color:Orange;">**Bei Paketen bitte in das Kommentarfeld "Abweichende Größen und Extras" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL 
-haben wollt aber wisst dass euch die Hose in XXL oder XL besser passt, dann schreibt in das Kommentarfeld _"Jogginghose XXL"_**.  
-Wenn ihr ein Paket ausgewählt habt welches ein Extra beinhaltet, dann auch in das Feld eintragen, welches Kleidungsstück ihr haben wollt und auch die Größe angeben</span>  
-Welches Paket was beinhaltet, bitte in der PDF nachgucken! 
+<span style="color:red;">**Bei Paketen bitte in das Kommentarfeld "Abweichende Größen" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL haben wollt aber wisst dass euch die Hose in XXL oder XL besser passt, dann schreibt in das Kommentarfeld _"Jogginghose XXL"_**</span>
 
 Ihr müsst für jeden Artikel alles Neu eintragen. Geht um die Übersichtlichkeit.  
 
@@ -179,7 +178,8 @@ Bei Fragen meldet euch gern:
 """,
         unsafe_allow_html=True
     )
-    with st.form("add_item", clear_on_submit=False):
+
+    with st.form("add_item", clear_on_submit=True):
         if not st.session_state.customer_info:
             name = st.text_input("Name Spieler*in")
             team = st.text_input("Team / Mannschaft")
@@ -214,11 +214,11 @@ Bei Fragen meldet euch gern:
 
             st.session_state.customer_info = {"name": name, "team": team, "nummer": nummer}
 
-            # Reset fields
             additional_sizes = ""
             qty = 1
 
             st.success(f"{qty}× {artikel} hinzugefügt")
+
 # RIGHT: CART
 with right:
     st.header("🛒 Warenkorb")
@@ -244,6 +244,14 @@ with right:
 
         st.markdown("---")
 
+        # Delete items
+        if st.button("Artikel aus dem Warenkorb löschen"):
+            selected_indices = st.multiselect("Zu löschende Artikel auswählen", df.index, default=[])
+            if selected_indices:
+                st.session_state.cart = [item for i, item in enumerate(st.session_state.cart) if i not in selected_indices]
+                st.success("Artikel aus dem Warenkorb entfernt.")
+                st.rerun() # Refresh the page to update the dataframe
+
         # SEND TO GOOGLE SHEETS
         if st.button("Bestellung absenden"):
             rows = []
@@ -260,6 +268,7 @@ with right:
             if ok:
                 st.success("Erfolgreich an Google Sheets übertragen!")
                 st.session_state.cart = []
+                st.session_state.customer_info = {}
             else:
                 st.error(f"Google Sheets Fehler: {err}")
 
@@ -276,6 +285,7 @@ with right:
             append_orders_to_csv(rows)
             st.success("Lokal gespeichert (orders_local.csv).")
             st.session_state.cart = []
+            st.session_state.customer_info = {}
 
 st.markdown("""
 ### Zahlungsinformationen
