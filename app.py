@@ -162,6 +162,7 @@ with left:
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
 <span style="color:red;">**Bei Paketen bitte in das Kommentarfeld "Abweichende Größen" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL haben wollt aber wisst dass euch die Hose in XXL oder XL besser passt, dann schreibt in das Kommentarfeld _"Jogginghose XXL"_**</span>
+Welches Paket was beinhaltet, bitte in der PDF nachgucken. 
 
 Ihr müsst für jeden Artikel alles Neu eintragen. Geht um die Übersichtlichkeit.  
 
@@ -176,7 +177,7 @@ Bei Fragen meldet euch gern:
     with st.form("add_item", clear_on_submit=True):
         name = st.text_input("Name Spieler*in")
         team = st.text_input("Team / Mannschaft")
-        nummer = st.text_input("Rückennummer (optional)")
+        nummer = st.text_input("Rückennummer oder Initialen")
 
         artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
         size = st.selectbox("Größe", SIZES)
