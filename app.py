@@ -172,7 +172,8 @@ with left:
 ### Anleitung
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
-<span style="color:red;">**Bei Paketen bitte in das Kommentarfeld "Abweichende Größen" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL haben wollt aber wisst dass euch die Hose in XXL oder XL besser passt, dann schreibt in das Kommentarfeld _"Jogginghose XXL"_**</span>
+<span style="color:red;">**Bei Paketen bitte in das Kommentarfeld "Abweichende Größen und Extras" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL haben wollt
+aber wisst dass euch die Hose in XXL oder XL besser passt, dann schreibt in das Kommentarfeld _"Jogginghose XXL"_**  Bei manchen Paketen kann man ein Extraprodukt aussuchen, bitte das auch in das Kommentarfeld eintragen</span>
 
 Ihr müsst für jeden Artikel alles Neu eintragen. Geht um die Übersichtlichkeit.  
 
@@ -198,7 +199,7 @@ Bei Fragen meldet euch gern:
         artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
         size = st.selectbox("Größe", SIZES)
         qty = st.number_input("Menge", 1, step=1)
-        additional_sizes = st.text_area("Zusätzliche Größen (falls Paket und unterschiedliche Größen benötigt)", placeholder="z. B. T-Shirt 3XL, Hose XXL;")
+        additional_sizes = st.text_area("Zusätzliche Größen und Extra", placeholder="z. B. Kurze Hose XL, Hose XXL; Extra Polo 3XL")
 
         submit = st.form_submit_button("Zum Warenkorb hinzufügen")
 
