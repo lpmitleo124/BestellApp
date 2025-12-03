@@ -248,15 +248,6 @@ with right:
 
         st.markdown("---")
 
-        # Delete items
-        if st.button("Artikel aus dem Warenkorb löschen"):
-            selected_indices = st.multiselect("Zu löschende Artikel auswählen", range(len(df)), default=[])
-            if selected_indices:
-                new_cart = [item for i, item in enumerate(st.session_state.cart) if i not in selected_indices]
-                st.session_state.cart = new_cart
-                st.success("Artikel aus dem Warenkorb entfernt.")
-                st.experimental_rerun()
-
         # SEND TO GOOGLE SHEETS
         if st.button("Bestellung absenden"):
             rows = []
