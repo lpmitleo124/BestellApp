@@ -18,9 +18,11 @@ from google.oauth2.service_account import Credentials
 PRICES = {
     "Zip Jacke NMS": (65, 70),
     "Kapuzenpulli NMS": (50, 55),
+    "Fluffy Hoodie": (48, 48)
     "Kurz Hose Mesh 2k5": (28, 30),
     "Jogging Hose NMS": (45, 50),
     "T-Shirt": (20, 25),
+    "T-Shirt Kids": (28, 28)
     "Kapuzenpulli Gildan": (40, 45),
     "Polo": (35, 38),
     "Tank Top": (25, 28),
@@ -39,7 +41,7 @@ PRICES = {
 
 
 # AVAILABLE SIZES
-SIZES = ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"]
+SIZES = ["YS", "YM", "YL", "YXL" "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"]
 
 # Available Teams
 TEAMS = ["Seniors", "FLINTA*", "U10", "U13", "U16", "U19"]
@@ -288,5 +290,5 @@ st.markdown("""
 💳 **PayPal:** [https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr](https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr)   
 Verwendungszweck: **Name und Team eintragen**
 
-Sollte was schieflaufen oder ihr besitzt kein Paypal bitt schreibt mich Leonard Kötter (Tel.: 01736121352) an und wir finden eine Lösung
+Sollte was schieflaufen oder ihr besitzt kein Paypal bitte schreibt mich Leonard Kötter (Tel.: +49 173 6121352) an und wir finden eine Lösung
 """)
