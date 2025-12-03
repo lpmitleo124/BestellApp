@@ -41,7 +41,7 @@ PRICES = {
 
 
 # AVAILABLE SIZES
-SIZES = ["YS", "YM", "YL", "YXL" "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"]
+SIZES = ["YS", "YM", "YL", "YXL", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"]
 
 # Available Teams
 TEAMS = ["Seniors", "FLINTA*", "U10", "U13", "U16", "U19"]
@@ -189,7 +189,7 @@ Bei Fragen meldet euch gern:
         if not st.session_state.customer_info:
             name = st.text_input("Name Spieler*in")
             team = st.selectbox("Team", TEAMS)
-            nummer = st.text_input("Rückennummer (optional)")
+            nummer = st.text_input("Jerseynummer oder Initialen")
         else:
             name = st.text_input("Name Spieler*in", st.session_state.customer_info["name"])
             team = st.selectbox("Team", TEAMS, index=TEAMS.index(st.session_state.customer_info["team"]))
