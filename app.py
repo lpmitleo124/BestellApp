@@ -143,6 +143,9 @@ def generate_invoice_pdf(cart, customer_name, team):
     # Payment Info
     story.append(Paragraph("Zahlungsinformationen:", styles["Heading3"]))
     story.append(Paragraph("PayPal: <b>https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr</b>", styles["Normal"]))
+    story.append(Paragraph("PayPal: <b>Verwendungszweck: Name und Team eintragen</b>", styles["Normal"]))
+    story.append(Paragraph("PayPal: <b>Sollte was schieflaufen oder ihr besitzt kein Paypal bitte schreibt mich Leonard Kötter (Tel.: +49 173 6121352) an und wir finden eine Lösung</b>", styles["Normal"]))
+
 
     doc.build(story)
     return buffer.getvalue()
