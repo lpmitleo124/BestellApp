@@ -151,6 +151,9 @@ st.title("🔥 Münster Phoenix – Teamwear Bestellsystem")
 if "cart" not in st.session_state:
     st.session_state.cart = []
 
+if "customer_info" not in st.session_state:
+    st.session_state.customer_info = {}
+
 left, right = st.columns([1, 2])
 
 
