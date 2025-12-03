@@ -181,7 +181,7 @@ Tragt hier alle Artikel ein, die ihr bestellen möchtet.
 
 <span style="color:red;">Bitte nutzt das Kommentarfeld „Abweichende Größen und Extras“, wenn etwas vom Standard abweicht.</span>
 
-<span style="color:red;">- Abweichende Größen: Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.</span>
+<span style="color:red;">- Abweichende Größen: Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.</span>  
 
     <span style="color:red;"> - Beispiel: Paket in 3XL, Hose in XXL → "Jogginghose XXL" eintragen</span>  
     
