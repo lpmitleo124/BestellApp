@@ -161,7 +161,7 @@ with left:
 ### Anleitung
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
-**Bei Paketen bitte in das Kommentarfeld "Abweichende Größen" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL haben wollt aber wisst dass euch die Hose in XXL oder XL besser passt, dann schreibt in das Kommentarfeld _"Jogginghose XXL"_**  
+<span style="color:red;">**Bei Paketen bitte in das Kommentarfeld "Abweichende Größen" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL haben wollt aber wisst dass euch die Hose in XXL oder XL besser passt, dann schreibt in das Kommentarfeld _"Jogginghose XXL"_**</span>
 
 Ihr müsst für jeden Artikel alles Neu eintragen. Geht um die Übersichtlichkeit.  
 
@@ -170,7 +170,9 @@ Anschließend überweist mir bitte den fälligen Betrag.
 
 Bei Fragen meldet euch gern:
 **Leonard Kötter, +49 173 6121352** 
-""")
+""",
+        unsafe_allow_html=True
+    )
     with st.form("add_item", clear_on_submit=True):
         name = st.text_input("Name Spieler*in")
         team = st.text_input("Team / Mannschaft")
