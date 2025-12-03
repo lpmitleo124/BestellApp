@@ -36,29 +36,17 @@ PRICES = {
     "Paket 8": (155, 170),
 }
 
+
 # AVAILABLE SIZES
 SIZES = ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"]
-
-# Detect package items
-PACKAGE_KEYS = [k for k in PRICES.keys() if k.lower().startswith("paket")]
 
 
 # ---------------------------
 # HELPERS
 # ---------------------------
-def normalize_size(size: str) -> str:
-    """Normalisiert Größen inkl. Synonyme (XXXL->3XL, etc.)."""
-    if not size:
-        return ""
-    s = str(size).strip().upper().replace(" ", "")
-    synonyms = {"XXXL": "3XL", "XXXXL": "4XL", "XXXXXL": "5XL"}
-    return synonyms.get(s, s)
-
-
 def get_price_for_size(artikel, size):
     base, xxl = PRICES[artikel]
-    s = normalize_size(size)
-    return xxl if s in {"3XL", "4XL", "5XL"} else base
+    return xxl if size in ["3XL", "4XL", "5XL"] else base
 
 
 def connect_to_sheet(sheet_name="Teamwear_Bestellungen"):
@@ -96,8 +84,8 @@ def append_orders_to_csv(rows, path="orders_local.csv"):
         if not exists:
             w.writerow([
                 "Timestamp", "Name", "Team", "Nummer",
-                "Artikel", "Größe", "Paket-Details", "Menge",
-                "Einzelpreis", "Summe"
+                "Artikel", "Größe", "Farbe", "Menge",
+                "Einzelpreis", "Summe", "Zusätzliche Größen"
             ])
         for r in rows:
             w.writerow(r)
@@ -119,30 +107,28 @@ def generate_invoice_pdf(cart, customer_name, team):
     story.append(Spacer(1, 18))
 
     # Table
-    data = [["Artikel", "Größe", "Menge", "Einzelpreis (€)", "Summe (€)"]]
+    data = [["Artikel", "Größe", "Menge", "Einzelpreis (€)", "Summe (€)", "Zusätzliche Größen"]]
     total = 0
 
     for item in cart:
-        artikel_label = item["artikel"]
-        if item.get("package_details"):
-            artikel_label += f" – {item['package_details']}"
         data.append([
-            artikel_label,
-            item.get("size", ""),
+            item["artikel"],
+            item["size"],
             item["qty"],
             f"{item['price']:.2f}",
             f"{item['line_total']:.2f}",
+            item["additional_sizes"]
         ])
         total += item["line_total"]
 
-    data.append(["", "", "", "Gesamt", f"{total:.2f} €"])
+    data.append(["", "", "", "", "Gesamt", f"{total:.2f} €"])
 
-    table = Table(data, colWidths=[220, 60, 60, 80, 100])
+    table = Table(data, colWidths=[140, 50, 60, 55, 90, 90])
     table.setStyle(TableStyle([
         ("GRID", (0, 0), (-1, -1), 0.5, rl_colors.black),
         ("BACKGROUND", (0, 0), (-1, 0), rl_colors.lightgrey),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("ALIGN", (2, 1), (-1, -1), "RIGHT"),
+        ("ALIGN", (3, 1), (-1, -1), "RIGHT"),
     ]))
 
     story.append(table)
@@ -164,12 +150,9 @@ st.title("🔥 Münster Phoenix – Teamwear Bestellsystem")
 
 if "cart" not in st.session_state:
     st.session_state.cart = []
-if "package_details_input" not in st.session_state:
-    st.session_state.package_details_input = ""
-if "artikel_selected" not in st.session_state:
-    st.session_state.artikel_selected = list(PRICES.keys())[0]
 
 left, right = st.columns([1, 2])
+
 
 # LEFT: ADD ITEM
 with left:
@@ -183,50 +166,19 @@ Anschließend überweist mir bitte den fälligen Betrag.
 Bei Fragen meldet euch gern:
 **Leonard Kötter, +49 173 6121352** 
 """)
-
-    # Artikel-Auswahl außerhalb des Formulars für sofortige Anzeige der dynamischen Felder
-    st.session_state.artikel_selected = st.selectbox(
-        "Artikel / Paket",
-        list(PRICES.keys()),
-        index=list(PRICES.keys()).index(st.session_state.artikel_selected)
-        if st.session_state.artikel_selected in PRICES
-        else 0,
-        key="artikel_select"
-    )
-    is_package = st.session_state.artikel_selected in PACKAGE_KEYS
-
-    # Formular mit Paket-Abfrage IN der normalen Abfrage
     with st.form("add_item", clear_on_submit=True):
         name = st.text_input("Name Spieler*in")
         team = st.text_input("Team / Mannschaft")
         nummer = st.text_input("Rückennummer (optional)")
 
-        if is_package:
-            # Paket: Größe als freier Text (für 3XL/4XL/5XL oder XXXL/XXXXL/XXXXXL)
-            size_input = st.text_input(
-                "Größe (Paket)",
-                value="",
-                placeholder="z. B. M oder 3XL/XXXL"
-            )
-            st.info("Du hast ein Paket gewählt. Bitte gib hier die Details an (z. B. Inhalte, weitere Größen, Name/Nr., Farbe):")
-            package_details = st.text_area(
-                "Paket-Details",
-                value=st.session_state.package_details_input,
-                placeholder="z. B. T-Shirt L, Hose M; Name: Meyer, Nr.: 12"
-            )
-            size = size_input  # speichern, wird für Preisnormalisierung genutzt
-        else:
-            package_details = ""
-            size = st.selectbox("Größe", SIZES)
-
+        artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
+        size = st.selectbox("Größe", SIZES)
         qty = st.number_input("Menge", 1, step=1)
+        additional_sizes = st.text_area("Zusätzliche Größen (falls Paket und unterschiedliche Größen benötigt)", "")
 
         submit = st.form_submit_button("Zum Warenkorb hinzufügen")
 
         if submit:
-            artikel = st.session_state.artikel_selected
-
-            # Preis mit XL-Logik inkl. Synonyme (XXXL/XXXXL/XXXXXL)
             price = get_price_for_size(artikel, size)
             total_price = price * qty
 
@@ -235,14 +187,13 @@ Bei Fragen meldet euch gern:
                 "team": team,
                 "nummer": nummer,
                 "artikel": artikel,
-                "size": normalize_size(size),  # normalisiert speichern
-                "package_details": package_details,
+                "size": size,
                 "qty": qty,
                 "price": price,
                 "line_total": total_price,
+                "additional_sizes": additional_sizes
             })
 
-            st.session_state.package_details_input = ""
             st.success(f"{qty}× {artikel} hinzugefügt")
 
 # RIGHT: CART
@@ -254,26 +205,9 @@ with right:
         st.info("Noch keine Artikel im Warenkorb.")
     else:
         df = pd.DataFrame(cart)
-        cols_order = ["name", "team", "nummer", "artikel", "size", "package_details", "qty", "price", "line_total"]
-        for c in cols_order:
-            if c not in df.columns:
-                df[c] = ""
-        df = df[cols_order]
-        df = df.rename(columns={
-            "name": "Name",
-            "team": "Team",
-            "nummer": "Nummer",
-            "artikel": "Artikel",
-            "size": "Größe",
-            "package_details": "Paket-Details",
-            "qty": "Menge",
-            "price": "Einzelpreis",
-            "line_total": "Summe"
-        })
-
         st.dataframe(df, use_container_width=True)
 
-        total = df["Summe"].sum()
+        total = df["line_total"].sum()
         st.subheader(f"Gesamtbetrag: {total:.2f} €")
 
         # CSV Offer
@@ -282,8 +216,7 @@ with right:
 
         # PDF Invoice
         if st.button("Rechnung als PDF erstellen"):
-            raw_df = pd.DataFrame(cart)
-            pdf = generate_invoice_pdf(cart, raw_df["name"].iloc[0], raw_df["team"].iloc[0])
+            pdf = generate_invoice_pdf(cart, df["name"].iloc[0], df["team"].iloc[0])
             st.download_button("PDF herunterladen", pdf, "Rechnung.pdf", mime="application/pdf")
 
         st.markdown("---")
@@ -296,8 +229,8 @@ with right:
             for i in cart:
                 rows.append([
                     ts, i["name"], i["team"], i["nummer"],
-                    i["artikel"], i.get("size", ""), i.get("package_details", ""),
-                    i["qty"], i["price"], i["line_total"],
+                    i["artikel"], i["size"],
+                    i["qty"], i["price"], i["line_total"], i["additional_sizes"]
                 ])
 
             ok, err = append_orders_to_sheet(rows)
@@ -314,8 +247,8 @@ with right:
             for i in cart:
                 rows.append([
                     ts, i["name"], i["team"], i["nummer"],
-                    i["artikel"], i.get("size", ""), i.get("package_details", ""),
-                    i["qty"], i["price"], i["line_total"],
+                    i["artikel"], i["size"],
+                    i["qty"], i["price"], i["line_total"], i["additional_sizes"]
                 ])
             append_orders_to_csv(rows)
             st.success("Lokal gespeichert (orders_local.csv).")
