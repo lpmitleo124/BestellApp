@@ -177,11 +177,9 @@ with left:
 ### Anleitung
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
-<span style="color:red;">**Bei Paketbestellungen bitte das Kommentarfeld „Abweichende Größen und Extras“ nutzen:  
-
-    Abweichende Größen: Wenn einzelne Artikel von eurer Hauptgröße abweichen, tragt Artikel + gewünschte Größe ein. Beispiel: Paket in 3XL, Hose in XXL → „Jogginghose XXL“.
+<span style="color:red;">**Bei Paketbestellungen bitte das Kommentarfeld „Abweichende Größen und Extras“ nutzen: - Abweichende Größen: Wenn einzelne Artikel von eurer Hauptgröße abweichen, tragt Artikel + gewünschte Größe ein. Beispiel: Paket in 3XL, Hose in XXL → „Jogginghose XXL“.
     
-    Extras: Wenn im Paket ein Extra auswählbar ist, tragt eure Wahl dort ein. Beispiel: „Extra: Cap schwarz“ oder „Extra: Trainingsshirt L“.**</span>
+    - Extras: Wenn im Paket ein Extra auswählbar ist, tragt eure Wahl dort ein. Beispiel: „Extra: Cap schwarz“ oder „Extra: Trainingsshirt L“.**</span>
 
 Bitte klickt erst auf „Bestellung absenden“, wenn euer Warenkorb vollständig ist.
 
