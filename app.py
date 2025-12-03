@@ -18,11 +18,11 @@ from google.oauth2.service_account import Credentials
 PRICES = {
     "Zip Jacke NMS": (65, 70),
     "Kapuzenpulli NMS": (50, 55),
-    "Fluffy Hoodie": (48, 48)
+    "Fluffy Hoodie": (48, 48),
     "Kurz Hose Mesh 2k5": (28, 30),
     "Jogging Hose NMS": (45, 50),
     "T-Shirt": (20, 25),
-    "T-Shirt Kids": (28, 28)
+    "T-Shirt Kids": (28, 28),
     "Kapuzenpulli Gildan": (40, 45),
     "Polo": (35, 38),
     "Tank Top": (25, 28),
