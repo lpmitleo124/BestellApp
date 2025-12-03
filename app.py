@@ -244,10 +244,6 @@ with right:
 
         total = df["line_total"].sum()
         st.subheader(f"Gesamtbetrag: {total:.2f} €")
-        # CLEAR CART
-        if st.button("Warenkorb komplett leeren"):
-            st.session_state.cart = []
-            st.experimental_rerun()
             
         # CSV Offer
         csv = df.to_csv(index=False).encode()
