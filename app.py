@@ -1,3 +1,4 @@
+# Streamlit BestellApp - Münster Phoenix
 import streamlit as st
 import pandas as pd
 from io import BytesIO
@@ -213,7 +214,8 @@ Bei Fragen meldet euch gern:
             })
 
             st.session_state.customer_info = {"name": name, "team": team, "nummer": nummer}
-
+            
+            # Reset fields
             additional_sizes = ""
             qty = 1
 
@@ -243,16 +245,6 @@ with right:
             st.download_button("PDF herunterladen", pdf, "Rechnung.pdf", mime="application/pdf")
 
         st.markdown("---")
-
-        # Delete items
-        if st.button("Artikel aus dem Warenkorb löschen"):
-            selected_indices = st.multiselect("Zu löschende Artikel auswählen", range(len(df)), default=[])
-            if selected_indices:
-                new_cart = [item for i, item in enumerate(st.session_state.cart) if i not in selected_indices]
-                st.session_state.cart = new_cart
-                st.success("Artikel aus dem Warenkorb entfernt.")
-                # Refresh the page
-                st.experimental_rerun()
 
         # SEND TO GOOGLE SHEETS
         if st.button("Bestellung absenden"):
