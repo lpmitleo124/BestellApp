@@ -211,7 +211,7 @@ Bei Fragen meldet euch gern:
 
             st.session_state.customer_info = {"name": name, "team": team, "nummer": nummer}
 
-            st.success(f"{qty}× {artikel} hinzugefügt"
+            st.success(f"{qty}× {artikel} hinzugefügt")
 # RIGHT: CART
 with right:
     st.header("🛒 Warenkorb")
