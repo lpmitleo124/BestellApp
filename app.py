@@ -176,7 +176,7 @@ Bei Fragen meldet euch gern:
 """,
         unsafe_allow_html=True
     )
-     with st.form("add_item", clear_on_submit=False):
+    with st.form("add_item", clear_on_submit=False):
         if not st.session_state.customer_info:
             name = st.text_input("Name Spieler*in")
             team = st.text_input("Team / Mannschaft")
