@@ -177,31 +177,35 @@ with left:
     Paketbestellungen: Abweichende Größen und Extras
 </div>
 
-<div style='background-color:#1A1A1A; padding:18px; border-radius:12px; border:1px solid #333; font-size:16px;'>
+<div style='background-color:#1A1A1A; padding:18px; border-radius:12px; border:1px solid #333; font-size:16px; color:#FFFFFF;'>
 
-<p style='color:#FFFFFF;'>
-Bitte nutzt das Kommentarfeld <b style='color:#F05323;'>„Abweichende Größen und Extras“</b>, wenn etwas vom Standard abweicht.
-</p>
+    Bitte nutzt das Kommentarfeld 
+    <span style='color:#F05323; font-weight:600;'>„Abweichende Größen und Extras“</span>, 
+    wenn etwas vom Standard abweicht.
+    <br><br>
 
-<ul style='color:#FFFFFF;'>
-    <li style='margin-bottom:10px;'>
-        <b style='color:#F05323;'>Abweichende Größen:</b> Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.
-        <br>
-        <i style='color:#BBBBBB;'>Beispiel: Paket in 3XL, Hose in XXL → „Jogginghose XXL“ eintragen</i>
-    </li>
+    <ul style='color:#FFFFFF;'>
+        <li style='margin-bottom:10px;'>
+            <b style='color:#F05323;'>Abweichende Größen:</b> 
+            Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.
+            <br>
+            <span style='color:#BBBBBB; font-style:italic;'>Beispiel: Paket in 3XL, Hose in XXL → „Jogginghose XXL“ eintragen</span>
+        </li>
 
-    <li style='margin-bottom:10px;'>
-        <b style='color:#F05323;'>Extras:</b> Wenn im Paket ein Extra auswählbar ist, tragt eure Wahl dort ein.
-        <br>
-        <i style='color:#BBBBBB;'>Beispiele: „Extra: Polo XXL“ oder „Extra: Langarm L“</i>
-    </li>
-</ul>
+        <li style='margin-bottom:10px;'>
+            <b style='color:#F05323;'>Extras:</b> 
+            Wenn im Paket ein Extra auswählbar ist, tragt eure Wahl dort ein.
+            <br>
+            <span style='color:#BBBBBB; font-style:italic;'>Beispiele: „Extra: Polo XXL“ oder „Extra: Langarm L“</span>
+        </li>
+    </ul>
 
-<p style='color:#F05323; font-weight:600; margin-top:15px;'>
-Tipp: Pro Wunsch eine eigene Zeile und klare Bezeichnungen verwenden.
-</p>
+    <div style='color:#F05323; font-weight:600; margin-top:15px;'>
+        Tipp: Pro Wunsch eine eigene Zeile und klare Bezeichnungen verwenden.
+    </div>
 
 </div>
+
 Bitte klickt erst auf „Bestellung absenden“, wenn euer Warenkorb vollständig ist.  
 
 Anschließend überweist mir bitte den fälligen Betrag.  
