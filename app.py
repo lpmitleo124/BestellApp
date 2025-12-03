@@ -283,9 +283,7 @@ Bei Fragen meldet euch gern:
             price = get_price_for_size(artikel, size)
             if price is None:
                 st.error("Ungültige Größe für diesen Artikel ausgewählt.")
-                return
-
-            total_price = price * qty
+                return total_price = price * qty
 
             st.session_state.cart.append({
                 "name": name,
