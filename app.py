@@ -184,11 +184,11 @@ Bei Fragen meldet euch gern:
     with st.form("add_item", clear_on_submit=True):
         if not st.session_state.customer_info:
             name = st.text_input("Name Spieler*in")
-            team = st.text_input("Team / Mannschaft")
+            team = st.selectbox("Team", TEAMS)
             nummer = st.text_input("Rückennummer (optional)")
         else:
             name = st.text_input("Name Spieler*in", st.session_state.customer_info["name"])
-            team = st.text_input("Team / Mannschaft", st.session_state.customer_info["team"])
+            team = st.selectbox("Team", TEAMS, index=TEAMS.index(st.session_state.customer_info["team"]))
             nummer = st.text_input("Rückennummer (optional)", st.session_state.customer_info["nummer"])
 
         artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
@@ -215,7 +215,11 @@ Bei Fragen meldet euch gern:
             })
 
             st.session_state.customer_info = {"name": name, "team": team, "nummer": nummer}
-            
+
+            additional_sizes = ""
+            qty = 1
+
+            st.success(f"{qty}× {artikel} hinzugefügt")
             # Reset fields
             additional_sizes = ""
             qty = 1
