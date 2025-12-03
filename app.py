@@ -172,11 +172,7 @@ left, right = st.columns([1, 2])
 with left:
     st.header("Neue Bestellung aufgeben")
 
-    st.markdown(
-        """
-### Anleitung
-Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
-st.markdown("""
+    st.markdown("""
 <div style='color:#F05323; font-size:22px; font-weight:700; margin-bottom:10px;'>
     Paketbestellungen: Abweichende Größen und Extras
 </div>
@@ -206,16 +202,13 @@ Tipp: Pro Wunsch eine eigene Zeile und klare Bezeichnungen verwenden.
 </p>
 
 </div>
+Bitte klickt erst auf „Bestellung absenden“, wenn euer Warenkorb vollständig ist.  
+
+Anschließend überweist mir bitte den fälligen Betrag.  
+
+Bei Fragen meldet euch gern: Leonard Kötter, +49 173 6121352
 """, unsafe_allow_html=True)
-Bitte klickt erst auf „Bestellung absenden“, wenn euer Warenkorb vollständig ist.
 
-Anschließend überweist mir bitte den fälligen Betrag.
-
-Bei Fragen meldet euch gern:
-**Leonard Kötter, +49 173 6121352** 
-""",
-        unsafe_allow_html=True
-    )
 
     with st.form("add_item", clear_on_submit=True):
         if not st.session_state.customer_info:
