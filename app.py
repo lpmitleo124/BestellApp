@@ -1,3 +1,4 @@
+# Streamlit BestellApp - Münster Phoenix
 import streamlit as st
 import pandas as pd
 from io import BytesIO
@@ -10,113 +11,128 @@ import os
 import gspread
 from google.oauth2.service_account import Credentials
 
-
 # ---------------------------
 # PRICE LIST
 # ---------------------------
 PRICES = {
-    "Zip Jacke": {
-        "XS": 65.00,
-        "S": 65.00,
-        "M": 65.00,
-        "L": 65.00,
-        "XL": 65.00,
-        "XXL": 65.00,
+    "Zip Jacke NMS": {
         "122/128": 65.00,
         "134/140": 65.00,
         "146/152": 65.00,
-        "158/164": 65.00
+        "158/164": 65.00,
+        "XS-XXL": 65.00,
+        "3XL-5XL": 70.00
     },
     "Kapuzenpulli NMS": {
-        "XS": 48.00,
-        "S": 48.00,
-        "M": 48.00,
-        "L": 48.00,
-        "XL": 48.00,
-        "XXL": 48.00,
         "122/128": 48.00,
         "134/140": 48.00,
         "146/152": 48.00,
-        "158/164": 48.00
+        "158/164": 48.00,
+        "XS-XXL": 50.00,
+        "3XL-5XL": 55.00
     },
-    "Jogging Hose": {
-        "XS": 45.00,
-        "S": 45.00,
-        "M": 45.00,
-        "L": 45.00,
-        "XL": 45.00,
-        "XXL": 45.00,
+    "Kurz Hose Mesh 2k5": {
+        "YM": 28.00,
+        "YL": 28.00,
+        "YXL": 28.00,
+        "XS-XXL": 28.00,
+        "3XL-5XL": 30.00
+    },
+    "Jogging hose NMS": {
         "122/128": 45.00,
         "134/140": 45.00,
         "146/152": 45.00,
-        "158/164": 45.00
+        "158/164": 45.00,
+        "XS-XXL": 45.00,
+        "3XL-5XL": 50.00
     },
-    "Gildan Hoodie": {
-        "YS (116/128)": 40.00,
-        "YM (140/152)": 40.00,
-        "YL (164)": 40.00,
-        "YXL (176)": 40.00,
-        "XS": 40.00,
+    "T-Shirt": {
+        "YS": 28.00,
+        "YM": 28.00,
+        "YL": 28.00,
+        "YXL": 28.00,
+        "S": 20.00,
+        "M": 20.00,
+        "L": 20.00,
+        "XL": 20.00,
+        "XXL": 20.00,
+        "3XL-5XL": 25.00
+    },
+    "Kapuzenpulli Gildan": {
+        "YS": 40.00,
+        "YM": 40.00,
+        "YL": 40.00,
+        "YXL": 40.00,
         "S": 40.00,
         "M": 40.00,
         "L": 40.00,
-        "XL": 40.00
-    },
-    "T-Shirt": {
-        "YS (110/116)": 28.00,
-        "YM (116/134)": 28.00,
-        "YL (140/152)": 28.00,
-        "YXL (164/174)": 28.00,
-        "XS": 28.00,
-        "S": 28.00,
-        "M": 28.00,
-        "L": 28.00,
-        "XL": 28.00
+        "XL": 40.00,
+        "XXL": 40.00,
+        "3XL-5XL": 45.00
     },
     "Polo": {
         "116 (5/6)": 35.00,
         "128 (7/8)": 35.00,
         "140 (9/10)": 35.00,
         "152 (11/12)": 35.00,
-        "XS": 35.00,
         "S": 35.00,
         "M": 35.00,
         "L": 35.00,
-        "XL": 35.00
+        "XL": 35.00,
+        "XXL": 35.00,
+        "3XL-5XL": 38.00
     },
-    "Kurz Hose Mesh": {
-        "YM": 28.00,
-        "YL": 28.00,
-        "YXL": 28.00,
-        "XS": 28.00,
-        "S": 28.00,
-        "M": 28.00,
-        "L": 28.00,
-        "XL": 28.00
-    }
+    "Tank TOP": {
+        "S": 25.00,
+        "M": 25.00,
+        "L": 25.00,
+        "XL": 25.00,
+        "XXL": 25.00,
+        "3XL-5XL": 28.00
+    },
+    "Langarm Shirt": {
+        "S": 35.00,
+        "M": 35.00,
+        "L": 35.00,
+        "XL": 35.00,
+        "XXL": 35.00,
+        "3XL-5XL": 38.00
+    },
+    # Pakete (Kinderpreis/erwachsenenpreis, Grße Größen)
+    "Paket 1": (45, 50),
+    "Paket 2": (80, 90),
+    "Paket 3": (75, 80),
+    "Paket 4": (100, 110),
+    "Paket 5": (110, 120),
+    "Paket 6": (125, 135),
+    "Paket 7": (150, 165),
+    "Paket 8": (155, 170)
 }
 
-
 # AVAILABLE SIZES
-SIZES = [
-    "XS", "S", "M", "L", "XL", "XXL",
-    "122/128", "134/140", "146/152", "158/164",
-    "YS (116/128)", "YM (140/152)", "YL (164)", "YXL (176)",
-    "YS (110/116)", "YM (116/134)", "YL (140/152)", "YXL (164/174)",
-    "116 (5/6)", "128 (7/8)", "140 (9/10)", "152 (11/12)",
-    "YM", "YL", "YXL"
-]
+SIZES = {
+    "Zip Jacke NMS": ["122/128", "134/140", "146/152", "158/164", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
+    "Kapuzenpulli NMS": ["122/128", "134/140", "146/152", "158/164", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
+    "Kurz Hose Mesh 2k5": ["YM", "YL", "YXL", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
+    "Jogging hose NMS": ["122/128", "134/140", "146/152", "158/164", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
+    "T-Shirt": ["YS", "YM", "YL", "YXL", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
+    "Kapuzenpulli Gildan": ["YS", "YM", "YL", "YXL", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
+    "Polo": ["116 (5/6)", "128 (7/8)", "140 (9/10)", "152 (11/12)", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
+    "Tank TOP": ["S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
+    "Langarm Shirt": ["S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"]
+}
 
 # Available Teams
 TEAMS = ["Seniors", "FLINTA*", "U10", "U13", "U16", "U19"]
-
 
 # ---------------------------
 # HELPERS
 # ---------------------------
 def get_price_for_size(artikel, size):
-    return PRICES[artikel][size]
-
+    if size in PRICES[artikel]:
+        return PRICES[artikel][size]
+    else:
+        return None  # Größe nicht gefunden
 
 def connect_to_sheet(sheet_name="Teamwear_Bestellungen"):
     """Google Sheets modern auth via Streamlit Secrets."""
@@ -131,7 +147,6 @@ def connect_to_sheet(sheet_name="Teamwear_Bestellungen"):
     client = gspread.authorize(credentials)
     return client.open(sheet_name).sheet1
 
-
 def append_orders_to_sheet(rows):
     """Send rows to Google Sheets"""
     try:
@@ -141,7 +156,6 @@ def append_orders_to_sheet(rows):
         return True, None
     except Exception as e:
         return False, str(e)
-
 
 def append_orders_to_csv(rows, path="orders_local.csv"):
     """Fallback if Google Sheets fails."""
@@ -159,7 +173,6 @@ def append_orders_to_csv(rows, path="orders_local.csv"):
         for r in rows:
             w.writerow(r)
     return True, None
-
 
 def generate_invoice_pdf(cart, customer_name, team):
     """Generates a PDF invoice"""
@@ -259,7 +272,8 @@ Bei Fragen meldet euch gern:
             nummer = st.text_input("Rückennummer (optional)", st.session_state.customer_info["nummer"])
 
         artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
-        size = st.selectbox("Größe", SIZES)
+        size_options = SIZES.get(artikel, [])  # Dynamische Größen
+        size = st.selectbox("Größe", size_options)
         qty = st.number_input("Menge", 1, step=1)
         additional_sizes = st.text_area("Zusätzliche Größen (falls Paket und unterschiedliche Größen benötigt)", placeholder="z. B. T-Shirt 3XL, Hose XXL;")
 
@@ -267,6 +281,10 @@ Bei Fragen meldet euch gern:
 
         if submit:
             price = get_price_for_size(artikel, size)
+            if price is None:
+                st.error("Ungültige Größe für diesen Artikel ausgewählt.")
+                return
+
             total_price = price * qty
 
             st.session_state.cart.append({
@@ -312,6 +330,7 @@ with right:
             st.download_button("PDF herunterladen", pdf, "Rechnung.pdf", mime="application/pdf")
 
         st.markdown("---")
+
 
         # SEND TO GOOGLE SHEETS
         if st.button("Bestellung absenden"):
