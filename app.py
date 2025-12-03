@@ -184,7 +184,7 @@ Bei Fragen meldet euch gern:
     with st.form("add_item", clear_on_submit=True):
         if not st.session_state.customer_info:
             name = st.text_input("Name Spieler*in")
-            team = st.selectbox("Team / Mannschaft", list(TEAMS.keys()))
+            team = st.text_input("Team / Mannschaft")
             nummer = st.text_input("Rückennummer (optional)")
         else:
             name = st.text_input("Name Spieler*in", st.session_state.customer_info["name"])
