@@ -164,6 +164,7 @@ Tragt hier alle Artikel ein, die ihr bestellen möchtet.
 Bei Paketen bitte in das Kommentarfeld "Abweichende Größen" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL haben wollt aber wisst dass euch die Hose in XXL oder XL besser passt, dann schreibt in das Kommentarfeld **"Jogginghose XXL"**  
 
 Ihr müsst für jeden Artikel alles Neu eintragen. Geht um die Übersichtlichkeit.  
+
 Seid ihr fertig, dann klickt auf „Bestellung absenden“.  
 Anschließend überweist mir bitte den fälligen Betrag.
 
