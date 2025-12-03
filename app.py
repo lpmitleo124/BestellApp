@@ -162,12 +162,23 @@ def generate_invoice_pdf(cart, customer_name, team):
 st.set_page_config(page_title="Münster Phoenix Teamwear", layout="wide")
 st.title("🔥 Münster Phoenix – Teamwear Bestellsystem")
 
+# Session defaults
 if "cart" not in st.session_state:
     st.session_state.cart = []
-if "package_details_input" not in st.session_state:
-    st.session_state.package_details_input = ""
-if "artikel_selected" not in st.session_state:
-    st.session_state.artikel_selected = list(PRICES.keys())[0]
+
+defaults = {
+    "name_input": "",
+    "team_input": "",
+    "nummer_input": "",
+    "artikel_select": list(PRICES.keys())[0],
+    "size_input": "",
+    "size_select": "M",
+    "package_details_input": "",
+    "qty_input": 1,
+}
+for k, v in defaults.items():
+    if k not in st.session_state:
+        st.session_state[k] = v
 
 left, right = st.columns([1, 2])
 
@@ -184,66 +195,82 @@ Bei Fragen meldet euch gern:
 **Leonard Kötter, +49 173 6121352** 
 """)
 
-    # Artikel-Auswahl außerhalb des Formulars für sofortige Anzeige der dynamischen Felder
-    st.session_state.artikel_selected = st.selectbox(
+    # Eingaben in gewünschter Reihenfolge (ohne st.form, damit dynamische Felder sofort reagieren)
+    st.session_state.name_input = st.text_input("Name Spieler*in", value=st.session_state.name_input, key="name_input")
+    st.session_state.team_input = st.text_input("Team / Mannschaft", value=st.session_state.team_input, key="team_input")
+    st.session_state.nummer_input = st.text_input("Rückennummer (optional)", value=st.session_state.nummer_input, key="nummer_input")
+
+    # WICHTIG: Artikel/Paket direkt UNTER Rückennummer
+    st.session_state.artikel_select = st.selectbox(
         "Artikel / Paket",
         list(PRICES.keys()),
-        index=list(PRICES.keys()).index(st.session_state.artikel_selected)
-        if st.session_state.artikel_selected in PRICES
-        else 0,
+        index=list(PRICES.keys()).index(st.session_state.artikel_select),
         key="artikel_select"
     )
-    is_package = st.session_state.artikel_selected in PACKAGE_KEYS
 
-    # Formular mit Paket-Abfrage IN der normalen Abfrage
-    with st.form("add_item", clear_on_submit=True):
-        name = st.text_input("Name Spieler*in")
-        team = st.text_input("Team / Mannschaft")
-        nummer = st.text_input("Rückennummer (optional)")
+    is_package = st.session_state.artikel_select in PACKAGE_KEYS
 
-        if is_package:
-            # Paket: Größe als freier Text (für 3XL/4XL/5XL oder XXXL/XXXXL/XXXXXL)
-            size_input = st.text_input(
-                "Größe (Paket)",
-                value="",
-                placeholder="z. B. M oder 3XL/XXXL"
-            )
-            st.info("Du hast ein Paket gewählt. Bitte gib hier die Details an (z. B. Inhalte, weitere Größen, Name/Nr., Farbe):")
-            package_details = st.text_area(
-                "Paket-Details",
-                value=st.session_state.package_details_input,
-                placeholder="z. B. T-Shirt L, Hose M; Name: Meyer, Nr.: 12"
-            )
-            size = size_input  # speichern, wird für Preisnormalisierung genutzt
-        else:
-            package_details = ""
-            size = st.selectbox("Größe", SIZES)
+    # Größe + Paket-Details: dynamisch sichtbar
+    if is_package:
+        st.session_state.size_input = st.text_input(
+            "Größe (Paket, optional – 3XL/4XL/5XL oder XXXL/XXXXL/XXXXXL erhöht den Preis)",
+            value=st.session_state.size_input,
+            key="size_input",
+            placeholder="z. B. M oder 3XL/XXXL"
+        )
+        st.info("Du hast ein Paket gewählt. Bitte gib hier die Paket-Details an (z. B. Inhalte, weitere Größen, Name/Nr., Farbe):")
+        st.session_state.package_details_input = st.text_area(
+            "Paket-Details",
+            value=st.session_state.package_details_input,
+            key="package_details_input",
+            placeholder="z. B. T-Shirt L, Hose M; Name: Meyer, Nr.: 12"
+        )
+        size_value = st.session_state.size_input
+    else:
+        st.session_state.size_select = st.selectbox(
+            "Größe",
+            SIZES,
+            index=SIZES.index(st.session_state.size_select) if st.session_state.size_select in SIZES else 2,
+            key="size_select"
+        )
+        size_value = st.session_state.size_select
+        st.session_state.package_details_input = ""
 
-        qty = st.number_input("Menge", 1, step=1)
+    st.session_state.qty_input = st.number_input("Menge", min_value=1, step=1, value=st.session_state.qty_input, key="qty_input")
 
-        submit = st.form_submit_button("Zum Warenkorb hinzufügen")
+    if st.button("Zum Warenkorb hinzufügen"):
+        name = st.session_state.name_input.strip()
+        team = st.session_state.team_input.strip()
+        nummer = st.session_state.nummer_input.strip()
+        artikel = st.session_state.artikel_select
+        size_norm = normalize_size(size_value)
+        package_details = st.session_state.package_details_input if is_package else ""
+        qty = int(st.session_state.qty_input)
 
-        if submit:
-            artikel = st.session_state.artikel_selected
+        price = get_price_for_size(artikel, size_norm)
+        total_price = price * qty
 
-            # Preis mit XL-Logik inkl. Synonyme (XXXL/XXXXL/XXXXXL)
-            price = get_price_for_size(artikel, size)
-            total_price = price * qty
+        st.session_state.cart.append({
+            "name": name,
+            "team": team,
+            "nummer": nummer,
+            "artikel": artikel,
+            "size": size_norm,
+            "package_details": package_details,
+            "qty": qty,
+            "price": price,
+            "line_total": total_price,
+        })
 
-            st.session_state.cart.append({
-                "name": name,
-                "team": team,
-                "nummer": nummer,
-                "artikel": artikel,
-                "size": normalize_size(size),  # normalisiert speichern
-                "package_details": package_details,
-                "qty": qty,
-                "price": price,
-                "line_total": total_price,
-            })
+        # Felder leeren nach Hinzufügen
+        st.session_state.name_input = ""
+        st.session_state.team_input = ""
+        st.session_state.nummer_input = ""
+        st.session_state.size_input = ""
+        st.session_state.qty_input = 1
+        st.session_state.package_details_input = ""
 
-            st.session_state.package_details_input = ""
-            st.success(f"{qty}× {artikel} hinzugefügt")
+        st.success(f"{qty}× {artikel} hinzugefügt")
 
 # RIGHT: CART
 with right:
@@ -276,11 +303,11 @@ with right:
         total = df["Summe"].sum()
         st.subheader(f"Gesamtbetrag: {total:.2f} €")
 
-        # CSV Offer
+        # CSV Angebot
         csv = df.to_csv(index=False).encode()
         st.download_button("Angebot als CSV herunterladen", csv, "angebot.csv")
 
-        # PDF Invoice
+        # PDF Rechnung
         if st.button("Rechnung als PDF erstellen"):
             raw_df = pd.DataFrame(cart)
             pdf = generate_invoice_pdf(cart, raw_df["name"].iloc[0], raw_df["team"].iloc[0])
