@@ -161,7 +161,7 @@ with left:
 ### Anleitung
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
-<span style="color:red;">**Bei Paketen bitte in das Kommentarfeld "Abweichende Größen und Extras" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL 
+<span style="color:Orange;">**Bei Paketen bitte in das Kommentarfeld "Abweichende Größen und Extras" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL 
 haben wollt aber wisst dass euch die Hose in XXL oder XL besser passt, dann schreibt in das Kommentarfeld _"Jogginghose XXL"_**.  
 Wenn ihr ein Paket ausgewählt habt welches ein Extra beinhaltet, dann auch in das Feld eintragen, welches Kleidungsstück ihr haben wollt und auch die Größe angeben</span>  
 Welches Paket was beinhaltet, bitte in der PDF nachgucken! 
