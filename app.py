@@ -176,15 +176,20 @@ Bei Fragen meldet euch gern:
 """,
         unsafe_allow_html=True
     )
-    with st.form("add_item", clear_on_submit=True):
-        name = st.text_input("Name Spieler*in")
-        team = st.text_input("Team / Mannschaft")
-        nummer = st.text_input("Rückennummer oder Initialen")
+     with st.form("add_item", clear_on_submit=False):
+        if not st.session_state.customer_info:
+            name = st.text_input("Name Spieler*in")
+            team = st.text_input("Team / Mannschaft")
+            nummer = st.text_input("Rückennummer (optional)")
+        else:
+            name = st.text_input("Name Spieler*in", st.session_state.customer_info["name"])
+            team = st.text_input("Team / Mannschaft", st.session_state.customer_info["team"])
+            nummer = st.text_input("Rückennummer (optional)", st.session_state.customer_info["nummer"])
 
         artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
         size = st.selectbox("Größe", SIZES)
         qty = st.number_input("Menge", 1, step=1)
-        additional_sizes = st.text_area("Abeweichende Größen und Extras bei Paketen", placeholder="z. B. Mesh-Short 3XL, Jogginghose XXL; Extra Tank Top M")
+        additional_sizes = st.text_area("Zusätzliche Größen (falls Paket und unterschiedliche Größen benötigt)", placeholder="z. B. T-Shirt 3XL, Hose XXL;")
 
         submit = st.form_submit_button("Zum Warenkorb hinzufügen")
 
@@ -204,8 +209,9 @@ Bei Fragen meldet euch gern:
                 "additional_sizes": additional_sizes
             })
 
-            st.success(f"{qty}× {artikel} hinzugefügt")
+            st.session_state.customer_info = {"name": name, "team": team, "nummer": nummer}
 
+            st.success(f"{qty}× {artikel} hinzugefügt"
 # RIGHT: CART
 with right:
     st.header("🛒 Warenkorb")
