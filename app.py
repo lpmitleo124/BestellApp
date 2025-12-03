@@ -176,20 +176,37 @@ with left:
         """
 ### Anleitung
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
+st.markdown("""
+<div style='color:#F05323; font-size:22px; font-weight:700; margin-bottom:10px;'>
+    Paketbestellungen: Abweichende Größen und Extras
+</div>
 
-<span style="color:red;">Paketbestellungen: Abweichende Größen und Extras </span>
+<div style='background-color:#1A1A1A; padding:18px; border-radius:12px; border:1px solid #333; font-size:16px;'>
 
-<span style="color:red;">Bitte nutzt das Kommentarfeld „Abweichende Größen und Extras“, wenn etwas vom Standard abweicht.</span>
+<p style='color:#FFFFFF;'>
+Bitte nutzt das Kommentarfeld <b style='color:#F05323;'>„Abweichende Größen und Extras“</b>, wenn etwas vom Standard abweicht.
+</p>
 
-<span style="color:red;">- Abweichende Größen: Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.</span>  
+<ul style='color:#FFFFFF;'>
+    <li style='margin-bottom:10px;'>
+        <b style='color:#F05323;'>Abweichende Größen:</b> Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.
+        <br>
+        <i style='color:#BBBBBB;'>Beispiel: Paket in 3XL, Hose in XXL → „Jogginghose XXL“ eintragen</i>
+    </li>
 
-<span style="color:red;"> - Beispiel: Paket in 3XL, Hose in XXL → "Jogginghose XXL" eintragen</span>  
-    
-<span style="color:red;">- Extras: Wenn im Paket ein Extra auswählbar ist, tragt eure Wahl dort ein.</span>    
-<span style="color:red;">  - Beispiele: "Extra: Polo XXL" oder "Extra: Langarm L"</span>  
+    <li style='margin-bottom:10px;'>
+        <b style='color:#F05323;'>Extras:</b> Wenn im Paket ein Extra auswählbar ist, tragt eure Wahl dort ein.
+        <br>
+        <i style='color:#BBBBBB;'>Beispiele: „Extra: Polo XXL“ oder „Extra: Langarm L“</i>
+    </li>
+</ul>
 
+<p style='color:#F05323; font-weight:600; margin-top:15px;'>
 Tipp: Pro Wunsch eine eigene Zeile und klare Bezeichnungen verwenden.
+</p>
 
+</div>
+""", unsafe_allow_html=True)
 Bitte klickt erst auf „Bestellung absenden“, wenn euer Warenkorb vollständig ist.
 
 Anschließend überweist mir bitte den fälligen Betrag.
