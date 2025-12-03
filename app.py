@@ -1,4 +1,3 @@
-# Streamlit BestellApp - Münster Phoenix
 import streamlit as st
 import pandas as pd
 from io import BytesIO
@@ -16,39 +15,107 @@ from google.oauth2.service_account import Credentials
 # PRICE LIST
 # ---------------------------
 PRICES = {
-    "Zip Jacke NMS": (65, 70),
-    "Kapuzenpulli NMS": (50, 55),
-    "Kurz Hose Mesh 2k5": (28, 30),
-    "Jogging Hose NMS": (45, 50),
-    "T-Shirt": (20, 25),
-    "Kapuzenpulli Gildan": (40, 45),
-    "Polo": (35, 38),
-    "Tank Top": (25, 28),
-    "Langarm Shirt": (35, 38),
-
-    # Pakete
-    "Paket 1": (45, 50),
-    "Paket 2": (80, 90),
-    "Paket 3": (75, 80),
-    "Paket 4": (100, 110),
-    "Paket 5": (110, 120),
-    "Paket 6": (125, 135),
-    "Paket 7": (150, 165),
-    "Paket 8": (155, 170),
+    "Zip Jacke": {
+        "XS": 65.00,
+        "S": 65.00,
+        "M": 65.00,
+        "L": 65.00,
+        "XL": 65.00,
+        "XXL": 65.00,
+        "122/128": 65.00,
+        "134/140": 65.00,
+        "146/152": 65.00,
+        "158/164": 65.00
+    },
+    "Kapuzenpulli NMS": {
+        "XS": 48.00,
+        "S": 48.00,
+        "M": 48.00,
+        "L": 48.00,
+        "XL": 48.00,
+        "XXL": 48.00,
+        "122/128": 48.00,
+        "134/140": 48.00,
+        "146/152": 48.00,
+        "158/164": 48.00
+    },
+    "Jogging Hose": {
+        "XS": 45.00,
+        "S": 45.00,
+        "M": 45.00,
+        "L": 45.00,
+        "XL": 45.00,
+        "XXL": 45.00,
+        "122/128": 45.00,
+        "134/140": 45.00,
+        "146/152": 45.00,
+        "158/164": 45.00
+    },
+    "Gildan Hoodie": {
+        "YS (116/128)": 40.00,
+        "YM (140/152)": 40.00,
+        "YL (164)": 40.00,
+        "YXL (176)": 40.00,
+        "XS": 40.00,
+        "S": 40.00,
+        "M": 40.00,
+        "L": 40.00,
+        "XL": 40.00
+    },
+    "T-Shirt": {
+        "YS (110/116)": 28.00,
+        "YM (116/134)": 28.00,
+        "YL (140/152)": 28.00,
+        "YXL (164/174)": 28.00,
+        "XS": 28.00,
+        "S": 28.00,
+        "M": 28.00,
+        "L": 28.00,
+        "XL": 28.00
+    },
+    "Polo": {
+        "116 (5/6)": 35.00,
+        "128 (7/8)": 35.00,
+        "140 (9/10)": 35.00,
+        "152 (11/12)": 35.00,
+        "XS": 35.00,
+        "S": 35.00,
+        "M": 35.00,
+        "L": 35.00,
+        "XL": 35.00
+    },
+    "Kurz Hose Mesh": {
+        "YM": 28.00,
+        "YL": 28.00,
+        "YXL": 28.00,
+        "XS": 28.00,
+        "S": 28.00,
+        "M": 28.00,
+        "L": 28.00,
+        "XL": 28.00
+    }
 }
 
 
 # AVAILABLE SIZES
-SIZES = ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"]
-# Teams
+SIZES = [
+    "XS", "S", "M", "L", "XL", "XXL",
+    "122/128", "134/140", "146/152", "158/164",
+    "YS (116/128)", "YM (140/152)", "YL (164)", "YXL (176)",
+    "YS (110/116)", "YM (116/134)", "YL (140/152)", "YXL (164/174)",
+    "116 (5/6)", "128 (7/8)", "140 (9/10)", "152 (11/12)",
+    "YM", "YL", "YXL"
+]
+
+# Available Teams
 TEAMS = ["Seniors", "FLINTA*", "U10", "U13", "U16", "U19"]
+
 
 # ---------------------------
 # HELPERS
 # ---------------------------
 def get_price_for_size(artikel, size):
-    base, xxl = PRICES[artikel]
-    return xxl if size in ["3XL", "4XL", "5XL"] else base
+    return PRICES[artikel][size]
 
 
 def connect_to_sheet(sheet_name="Teamwear_Bestellungen"):
@@ -220,11 +287,6 @@ Bei Fragen meldet euch gern:
             qty = 1
 
             st.success(f"{qty}× {artikel} hinzugefügt")
-            # Reset fields
-            additional_sizes = ""
-            qty = 1
-
-            st.success(f"{qty}× {artikel} hinzugefügt")
 
 # RIGHT: CART
 with right:
@@ -291,5 +353,5 @@ st.markdown("""
 💳 **PayPal:** [https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr](https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr)   
 Verwendungszweck: **Name und Team eintragen**
 
-Sollte was schieflaufen oder ihr besitzt kein Paypal bitte schreibt mich Leonard Kötter (Tel.: +49 173 6121352) an und wir finden eine Lösung
+Sollte was schieflaufen oder ihr besitzt kein Paypal bitt schreibt mich Leonard Kötter (Tel.: 01736121352) an und wir finden eine Lösung
 """)
