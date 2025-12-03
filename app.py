@@ -155,6 +155,8 @@ def generate_invoice_pdf(cart, customer_name, team):
 # STREAMLIT UI
 # ---------------------------
 st.set_page_config(page_title="Münster Phoenix Teamwear", layout="wide")
+# 🔥 LOGO EINBINDEN
+st.image("Münster_Phoenix_Logo_RGB.svg", width=180)
 st.title("🔥 Münster Phoenix – Teamwear Bestellsystem")
 
 if "cart" not in st.session_state:
@@ -237,12 +239,30 @@ with right:
     if not cart:
         st.info("Noch keine Artikel im Warenkorb.")
     else:
-        df = pd.DataFrame(cart)
-        st.dataframe(df, use_container_width=True)
 
+        # DELETE BUTTON FOR EACH ITEM
+        for i, item in enumerate(cart):
+            col1, col2, col3 = st.columns([5, 3, 1])
+            with col1:
+                st.write(f"**{item['artikel']}**, {item['size']} – {item['qty']}× ({item['line_total']} €)")
+            with col2:
+                st.write("")
+            with col3:
+                if st.button("❌", key=f"del_{i}"):
+                    st.session_state.cart.pop(i)
+                    st.experimental_rerun()
+
+        st.markdown("---")
+
+        df = pd.DataFrame(cart)
         total = df["line_total"].sum()
         st.subheader(f"Gesamtbetrag: {total:.2f} €")
 
+        # CLEAR CART
+        if st.button("Warenkorb komplett leeren"):
+            st.session_state.cart = []
+            st.experimental_rerun()
+            
         # CSV Offer
         csv = df.to_csv(index=False).encode()
         st.download_button("Angebot als CSV herunterladen", csv, "angebot.csv")
