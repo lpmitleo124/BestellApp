@@ -1,3 +1,4 @@
+# Streamlit BestellApp - Münster Phoenix
 import streamlit as st
 import pandas as pd
 from io import BytesIO
@@ -246,11 +247,12 @@ with right:
 
         # Delete items
         if st.button("Artikel aus dem Warenkorb löschen"):
-            selected_indices = st.multiselect("Zu löschende Artikel auswählen", df.index, default=[])
+            selected_indices = st.multiselect("Zu löschende Artikel auswählen", range(len(df)), default=[])
             if selected_indices:
-                st.session_state.cart = [item for i, item in enumerate(st.session_state.cart) if i not in selected_indices]
+                new_cart = [item for i, item in enumerate(st.session_state.cart) if i not in selected_indices]
+                st.session_state.cart = new_cart
                 st.success("Artikel aus dem Warenkorb entfernt.")
-                st.rerun() # Refresh the page to update the dataframe
+                # No need for st.rerun() because the dataframe is already updated.
 
         # SEND TO GOOGLE SHEETS
         if st.button("Bestellung absenden"):
