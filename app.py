@@ -281,10 +281,7 @@ Bei Fragen meldet euch gern:
 
         if submit:
             price = get_price_for_size(artikel, size)
-            total_price = price * qty
-            if price is None:
-                st.error("Ungültige Größe für diesen Artikel ausgewählt.")
-                
+            total_price = price * qty                
                 
 
             st.session_state.cart.append({
