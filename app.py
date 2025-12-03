@@ -177,7 +177,7 @@ with left:
 ### Anleitung
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
-<span style="color:red;">## Paketbestellungen: Abweichende Größen und Extras
+<span style="color:red;">Paketbestellungen: Abweichende Größen und Extras
 
 Bitte nutzt das Kommentarfeld „Abweichende Größen und Extras“, wenn etwas vom Standard abweicht.
 
