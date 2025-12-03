@@ -177,11 +177,11 @@ with left:
 ## Anleitung
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
-### Paketbestellungen: Abweichende Größen und Extras 
+#### Paketbestellungen: Abweichende Größen und Extras 
 Bitte nutzt das Kommentarfeld „Abweichende Größen und Extras“, wenn etwas vom Standard abweicht.
 - Abweichende Größen: Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.
 
-	- Beispiel: Paket in 3XL, Hose in XXL → "Jogginghose XXL" eintragen
+	- Beispiel: Paket in 3XL, Hose in XXL → "Jogginghose XXL" eintragen  
     
 - Extras: Wenn im Paket ein Extra auswählbar ist, tragt eure Wahl dort ein.
 	- Beispiele: "Extra: Polo XXL" oder "Extra: Langarm L"
