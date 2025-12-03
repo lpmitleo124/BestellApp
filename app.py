@@ -1,4 +1,3 @@
-# Streamlit BestellApp - Münster Phoenix
 import streamlit as st
 import pandas as pd
 from io import BytesIO
@@ -252,7 +251,8 @@ with right:
                 new_cart = [item for i, item in enumerate(st.session_state.cart) if i not in selected_indices]
                 st.session_state.cart = new_cart
                 st.success("Artikel aus dem Warenkorb entfernt.")
-                # No need for st.rerun() because the dataframe is already updated.
+                # Refresh the page
+                st.experimental_rerun()
 
         # SEND TO GOOGLE SHEETS
         if st.button("Bestellung absenden"):
