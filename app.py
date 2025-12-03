@@ -174,7 +174,7 @@ Bei Fragen meldet euch gern:
         artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
         size = st.selectbox("Größe", SIZES)
         qty = st.number_input("Menge", 1, step=1)
-        additional_sizes = st.text_area("Zusätzliche Größen (falls ihr unterschiedliche Größen benötigt als vorher angegeben)", "")
+        additional_sizes = st.text_area("Zusätzliche Größen (falls ihr unterschiedliche Größen benötigt als vorher angegeben)", placeholder="z. B. T-Shirt 3XL, Hose XXL;")
 
         submit = st.form_submit_button("Zum Warenkorb hinzufügen")
 
