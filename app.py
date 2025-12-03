@@ -40,7 +40,8 @@ PRICES = {
 
 # AVAILABLE SIZES
 SIZES = ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"]
-
+# Teams
+TEAMS = ["Seniors", "FLINTA*", "U10", "U13", "U16", "U19"]
 
 # ---------------------------
 # HELPERS
@@ -183,7 +184,7 @@ Bei Fragen meldet euch gern:
     with st.form("add_item", clear_on_submit=True):
         if not st.session_state.customer_info:
             name = st.text_input("Name Spieler*in")
-            team = st.text_input("Team / Mannschaft")
+            team = st.selectbox("Team / Mannschaft", list(TEAMS.keys()))
             nummer = st.text_input("Rückennummer (optional)")
         else:
             name = st.text_input("Name Spieler*in", st.session_state.customer_info["name"])
@@ -286,5 +287,5 @@ st.markdown("""
 💳 **PayPal:** [https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr](https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr)   
 Verwendungszweck: **Name und Team eintragen**
 
-Sollte was schieflaufen oder ihr besitzt kein Paypal bitt schreibt mich Leonard Kötter (Tel.: 01736121352) an und wir finden eine Lösung
+Sollte was schieflaufen oder ihr besitzt kein Paypal bitte schreibt mich Leonard Kötter (Tel.: 01736121352) an und wir finden eine Lösung
 """)
