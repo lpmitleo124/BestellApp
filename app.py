@@ -214,6 +214,10 @@ Bei Fragen meldet euch gern:
 
             st.session_state.customer_info = {"name": name, "team": team, "nummer": nummer}
 
+            # Reset fields
+            additional_sizes = ""
+            qty = 1
+
             st.success(f"{qty}× {artikel} hinzugefügt")
 # RIGHT: CART
 with right:
