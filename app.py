@@ -291,5 +291,5 @@ st.markdown("""
 💳 **PayPal:** [https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr](https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr)   
 Verwendungszweck: **Name und Team eintragen**
 
-Sollte was schieflaufen oder ihr besitzt kein Paypal bitte schreibt mich Leonard Kötter (Tel.: 01736121352) an und wir finden eine Lösung
+Sollte was schieflaufen oder ihr besitzt kein Paypal bitte schreibt mich Leonard Kötter (Tel.: +49 173 6121352) an und wir finden eine Lösung
 """)
