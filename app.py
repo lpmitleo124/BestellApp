@@ -174,11 +174,10 @@ with left:
 
     st.markdown(
         """
-### Anleitung
+## Anleitung
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
-<span style="color:red;">**Bei Paketen bitte in das Kommentarfeld "Abweichende Größen" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL haben wollt aber wisst dass euch die Hose in XXL oder XL besser passt, dann schreibt in das Kommentarfeld _"Jogginghose XXL"_**</span>
-Paketbestellungen: Abweichende Größen und Extras 
+### Paketbestellungen: Abweichende Größen und Extras 
 Bitte nutzt das Kommentarfeld „Abweichende Größen und Extras“, wenn etwas vom Standard abweicht.
 - Abweichende Größen: Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.
 
