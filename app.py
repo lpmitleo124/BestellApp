@@ -205,12 +205,6 @@ with left:
     </div>
 
 </div>
-
-Bitte klickt erst auf „Bestellung absenden“, wenn euer Warenkorb vollständig ist.  
-
-Anschließend überweist mir bitte den fälligen Betrag.  
-
-Bei Fragen meldet euch gern: Leonard Kötter, +49 173 6121352
 """, unsafe_allow_html=True)
 
 
