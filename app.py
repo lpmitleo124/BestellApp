@@ -172,40 +172,32 @@ left, right = st.columns([1, 2])
 with left:
     st.header("Neue Bestellung aufgeben")
 
-    st.markdown("""
-<div style='color:#F05323; font-size:22px; font-weight:700; margin-bottom:10px;'>
-    Paketbestellungen: Abweichende Größen und Extras
-</div>
+    st.markdown(
+        """
+### Anleitung
+Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
-<div style='background-color:#1A1A1A; padding:18px; border-radius:12px; border:1px solid #333; font-size:16px; color:#FFFFFF;'>
+<span style="color:red;">**Bei Paketen bitte in das Kommentarfeld "Abweichende Größen" reinschreiben, wenn ihr ein Produkt abweichend von der Hauptgröße haben wollt, also wenn ihr das Paket in 3XL haben wollt aber wisst dass euch die Hose in XXL oder XL besser passt, dann schreibt in das Kommentarfeld _"Jogginghose XXL"_**</span>
+Paketbestellungen: Abweichende Größen und Extras 
+Bitte nutzt das Kommentarfeld „Abweichende Größen und Extras“, wenn etwas vom Standard abweicht.
+- Abweichende Größen: Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.
 
-    Bitte nutzt das Kommentarfeld 
-    <span style='color:#F05323; font-weight:600;'>„Abweichende Größen und Extras“</span>, 
-    wenn etwas vom Standard abweicht.
-    <br><br>
+	- Beispiel: Paket in 3XL, Hose in XXL → "Jogginghose XXL" eintragen
+    
+- Extras: Wenn im Paket ein Extra auswählbar ist, tragt eure Wahl dort ein.
+	- Beispiele: "Extra: Polo XXL" oder "Extra: Langarm L"
 
-    <ul style='color:#FFFFFF;'>
-        <li style='margin-bottom:10px;'>
-            <b style='color:#F05323;'>Abweichende Größen:</b> 
-            Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.
-            <br>
-            <span style='color:#BBBBBB; font-style:italic;'>Beispiel: Paket in 3XL, Hose in XXL → „Jogginghose XXL“ eintragen</span>
-        </li>
+Tipp: Pro Wunsch eine eigene Zeile und klare Bezeichnungen verwenden.
+Ihr müsst für jeden Artikel alles Neu eintragen. Geht um die Übersichtlichkeit.  
 
-        <li style='margin-bottom:10px;'>
-            <b style='color:#F05323;'>Extras:</b> 
-            Wenn im Paket ein Extra auswählbar ist, tragt eure Wahl dort ein.
-            <br>
-            <span style='color:#BBBBBB; font-style:italic;'>Beispiele: „Extra: Polo XXL“ oder „Extra: Langarm L“</span>
-        </li>
-    </ul>
+Seid ihr fertig, dann klickt auf „Bestellung absenden“.  
+Anschließend überweist mir bitte den fälligen Betrag.
 
-    <div style='color:#F05323; font-weight:600; margin-top:15px;'>
-        Tipp: Pro Wunsch eine eigene Zeile und klare Bezeichnungen verwenden.
-    </div>
-
-</div>
-""", unsafe_allow_html=True)
+Bei Fragen meldet euch gern:
+**Leonard Kötter, +49 173 6121352** 
+""",
+        unsafe_allow_html=True
+    )
 
 
     with st.form("add_item", clear_on_submit=True):
