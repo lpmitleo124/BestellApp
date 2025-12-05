@@ -162,6 +162,32 @@ if "customer_info" not in st.session_state:
 # MOBILE LAYOUT: SINGLE COLUMN FORM
 # ---------------------------
 st.subheader("Neue Bestellung")
+st.markdown(
+        """
+## Anleitung
+Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
+
+#### Paketbestellungen: Abweichende Größen und Extras 
+Bitte nutzt das Kommentarfeld „Abweichende Größen und Extras“, wenn etwas vom Standard abweicht.
+- Abweichende Größen: Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.
+
+	- Beispiel: Paket in 3XL, Hose in XXL → "Jogginghose XXL" eintragen  
+    
+- Extras: Wenn im Paket ein Extra auswählbar ist, tragt eure Wahl dort ein.
+	- Beispiele: "Extra: Polo XXL" oder "Extra: Langarm L"
+
+Tipp: Pro Wunsch eine eigene Zeile und klare Bezeichnungen verwenden.
+Ihr müsst für jeden Artikel alles Neu eintragen. Geht um die Übersichtlichkeit.  
+
+Seid ihr fertig, dann klickt auf „Bestellung absenden“.  
+Anschließend überweist mir bitte den fälligen Betrag.
+
+Bei Fragen meldet euch gern:
+**Leonard Kötter, +49 173 6121352** 
+""",
+        unsafe_allow_html=True
+    )
+
 
 with st.form("add_item", clear_on_submit=True):
     if not st.session_state.customer_info:
@@ -233,10 +259,6 @@ else:
             unsafe_allow_html=True
         )
 
-        if st.button(f"❌ Entfernen", key=f"del_{i}", use_container_width=True):
-            st.session_state.cart.pop(i)
-            st.experimental_rerun()
-
         total += item["line_total"]
 
     st.subheader(f"**Gesamt: {total:.2f} €**")
@@ -271,10 +293,6 @@ else:
             st.experimental_rerun()
         else:
             st.error(f"Google Sheets Fehler: {err}")
-
-    if st.button("🗑️ Warenkorb leeren", use_container_width=True):
-        st.session_state.cart = []
-        st.experimental_rerun()
 
 
 # PAYMENT INFO
