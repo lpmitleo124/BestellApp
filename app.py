@@ -11,35 +11,6 @@ import os
 import gspread
 from google.oauth2.service_account import Credentials
 
-# ---------------------------
-# MOBILE SELECTBOX (no keyboard)
-# ---------------------------
-def mobile_select(label, options, key):
-    """Mobile-friendly dropdown replacement (no keyboard popup)."""
-    if key not in st.session_state:
-        st.session_state[key] = options[0]
-
-    btn_label = f"{label}: {st.session_state[key]}"
-
-    # Button that opens the menu
-    if st.button(btn_label, key=f"btn_{key}", use_container_width=True):
-        st.session_state[f"show_{key}"] = True
-
-    # Popup menu
-    if st.session_state.get(f"show_{key}", False):
-        st.markdown(
-            "<div style='padding:12px; background:#1A1A1A; border-radius:10px; border:1px solid #444;'>",
-            unsafe_allow_html=True
-        )
-        choice = st.radio(f"{label} auswählen:", options, key=f"radio_{key}")
-        if st.button("Auswahl übernehmen", key=f"save_{key}", use_container_width=True):
-            st.session_state[key] = choice
-            st.session_state[f"show_{key}"] = False
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    return st.session_state[key]
-
 
 # ---------------------------
 # PRICE LIST
@@ -221,15 +192,15 @@ Bei Fragen meldet euch gern:
 with st.form("add_item", clear_on_submit=True):
     if not st.session_state.customer_info:
         name = st.text_input("Name Spieler*in")
-        team = mobile_select("Team", TEAMS, "team_select")
+        team = st.selectbox("Team", TEAMS)
         nummer = st.text_input("Jerseynummer oder Initialen")
     else:
         name = st.text_input("Name Spieler*in", st.session_state.customer_info["name"])
-        team = mobile_select("Team", TEAMS, "team_select_saved")
+        team = st.selectbox("Team", TEAMS, index=TEAMS.index(st.session_state.customer_info["team"]))
         nummer = st.text_input("Rückennummer / Initialen", st.session_state.customer_info["nummer"])
 
-    artikel = mobile_select("Artikel / Paket", list(PRICES.keys()), "artikel_select")
-    size = mobile_select("Größe", SIZES, "size_select")
+    artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
+    size = st.selectbox("Größe", SIZES)
     qty = st.number_input("Menge", 1, step=1)
     additional_sizes = st.text_area("Abweichende Größen & Extras", placeholder="z. B. Hose XXL, Extra Polo")
 
