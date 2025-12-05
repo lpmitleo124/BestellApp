@@ -148,7 +148,7 @@ st.set_page_config(page_title="Phoenix Teamwear", layout="centered")
 
 # LOGO
 st.image("Münster_Phoenix_Logo_RGB.svg", width=160)
-st.markdown("<h1 style='text-align:center;'>🔥 Münster Phoenix – Teamwear</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;'> Münster Phoenix – Teamwear</h1>", unsafe_allow_html=True)
 
 # CART SESSION
 if "cart" not in st.session_state:
