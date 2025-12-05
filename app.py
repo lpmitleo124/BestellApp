@@ -1,4 +1,4 @@
-# Streamlit BestellApp - Münster Phoenix
+# Streamlit BestellApp - Münster Phoenix (Mobile Version)
 import streamlit as st
 import pandas as pd
 from io import BytesIO
@@ -39,11 +39,10 @@ PRICES = {
     "Paket 8": (155, 170),
 }
 
-
-# AVAILABLE SIZES
+# SIZES
 SIZES = ["YS", "YM", "YL", "YXL", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"]
 
-# Available Teams
+# TEAMS
 TEAMS = ["Seniors", "FLINTA*", "U10", "U13", "U16", "U19"]
 
 
@@ -56,7 +55,6 @@ def get_price_for_size(artikel, size):
 
 
 def connect_to_sheet(sheet_name="Teamwear_Bestellungen"):
-    """Google Sheets modern auth via Streamlit Secrets."""
     creds_info = st.secrets["gcp_service_account"]
 
     scopes = [
@@ -70,7 +68,6 @@ def connect_to_sheet(sheet_name="Teamwear_Bestellungen"):
 
 
 def append_orders_to_sheet(rows):
-    """Send rows to Google Sheets"""
     try:
         sheet = connect_to_sheet()
         for r in rows:
@@ -81,9 +78,7 @@ def append_orders_to_sheet(rows):
 
 
 def append_orders_to_csv(rows, path="orders_local.csv"):
-    """Fallback if Google Sheets fails."""
     import csv
-
     exists = os.path.exists(path)
     with open(path, "a", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -99,7 +94,6 @@ def append_orders_to_csv(rows, path="orders_local.csv"):
 
 
 def generate_invoice_pdf(cart, customer_name, team):
-    """Generates a PDF invoice"""
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=(595, 842))
     styles = getSampleStyleSheet()
@@ -112,7 +106,6 @@ def generate_invoice_pdf(cart, customer_name, team):
     story.append(Paragraph(f"Team: {team}", styles["Normal"]))
     story.append(Spacer(1, 18))
 
-    # Table
     data = [["Artikel", "Größe", "Menge", "Einzelpreis (€)", "Summe (€)", "Zusätzliche Größen"]]
     total = 0
 
@@ -129,180 +122,165 @@ def generate_invoice_pdf(cart, customer_name, team):
 
     data.append(["", "", "", "", "Gesamt", f"{total:.2f} €"])
 
-    table = Table(data, colWidths=[140, 50, 60, 55, 90, 90])
+    table = Table(data, colWidths=[120, 50, 55, 75, 75, 140])
     table.setStyle(TableStyle([
         ("GRID", (0, 0), (-1, -1), 0.5, rl_colors.black),
         ("BACKGROUND", (0, 0), (-1, 0), rl_colors.lightgrey),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("ALIGN", (3, 1), (-1, -1), "RIGHT"),
+        ("ALIGN", (2, 1), (-1, -1), "RIGHT"),
     ]))
 
     story.append(table)
     story.append(Spacer(1, 20))
 
-    # Payment Info
-    story.append(Paragraph("Zahlungsinformationen:", styles["Heading3"]))
-    story.append(Paragraph("PayPal: <b>https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr</b>", styles["Normal"]))
-    story.append(Paragraph("<b>Verwendungszweck: Name und Team eintragen</b>", styles["Normal"]))
-    story.append(Paragraph("<b>Sollte was schieflaufen oder ihr besitzt kein Paypal bitte schreibt mich Leonard Kötter (Tel.: +49 173 6121352) an und wir finden eine Lösung</b>", styles["Normal"]))
-
+    story.append(Paragraph("<b>PayPal:</b> https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr", styles["Normal"]))
+    story.append(Paragraph("<b>Verwendungszweck:</b> Name + Team", styles["Normal"]))
+    story.append(Paragraph("<b>Bei Problemen:</b> Leonard Kötter – 0173 6121352", styles["Normal"]))
 
     doc.build(story)
     return buffer.getvalue()
 
 
 # ---------------------------
-# STREAMLIT UI
+# UI CONFIG
 # ---------------------------
-st.set_page_config(page_title="Münster Phoenix Teamwear", layout="wide")
-# 🔥 LOGO EINBINDEN
-st.image("Münster_Phoenix_Logo_RGB.svg", width=180)
-st.title("🔥 Münster Phoenix – Teamwear Bestellsystem")
+st.set_page_config(page_title="Phoenix Teamwear", layout="centered")
 
+# LOGO
+st.image("Münster_Phoenix_Logo_RGB.svg", width=160)
+st.markdown("<h1 style='text-align:center;'>🔥 Münster Phoenix – Teamwear</h1>", unsafe_allow_html=True)
+
+# CART SESSION
 if "cart" not in st.session_state:
     st.session_state.cart = []
 
 if "customer_info" not in st.session_state:
     st.session_state.customer_info = {}
 
-left, right = st.columns([1, 2])
 
+# ---------------------------
+# MOBILE LAYOUT: SINGLE COLUMN FORM
+# ---------------------------
+st.subheader("Neue Bestellung")
 
-# LEFT: ADD ITEM
-with left:
-    st.header("Neue Bestellung aufgeben")
-
-    st.markdown(
-        """
-## Anleitung
-Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
-
-#### Paketbestellungen: Abweichende Größen und Extras 
-Bitte nutzt das Kommentarfeld „Abweichende Größen und Extras“, wenn etwas vom Standard abweicht.
-- Abweichende Größen: Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.
-
-	- Beispiel: Paket in 3XL, Hose in XXL → "Jogginghose XXL" eintragen  
-    
-- Extras: Wenn im Paket ein Extra auswählbar ist, tragt eure Wahl dort ein.
-	- Beispiele: "Extra: Polo XXL" oder "Extra: Langarm L"
-
-Tipp: Pro Wunsch eine eigene Zeile und klare Bezeichnungen verwenden.
-Ihr müsst für jeden Artikel alles Neu eintragen. Geht um die Übersichtlichkeit.  
-
-Seid ihr fertig, dann klickt auf „Bestellung absenden“.  
-Anschließend überweist mir bitte den fälligen Betrag.
-
-Bei Fragen meldet euch gern:
-**Leonard Kötter, +49 173 6121352** 
-""",
-        unsafe_allow_html=True
-    )
-
-
-    with st.form("add_item", clear_on_submit=True):
-        if not st.session_state.customer_info:
-            name = st.text_input("Name Spieler*in")
-            team = st.selectbox("Team", TEAMS)
-            nummer = st.text_input("Jerseynummer oder Initialen")
-        else:
-            name = st.text_input("Name Spieler*in", st.session_state.customer_info["name"])
-            team = st.selectbox("Team", TEAMS, index=TEAMS.index(st.session_state.customer_info["team"]))
-            nummer = st.text_input("Rückennummer (optional)", st.session_state.customer_info["nummer"])
-
-        artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
-        size = st.selectbox("Größe", SIZES)
-        qty = st.number_input("Menge", 1, step=1)
-        additional_sizes = st.text_area("Zusätzliche Größen und Extra", placeholder="z. B. Kurze Hose XL, Hose XXL; Extra Polo 3XL")
-
-        submit = st.form_submit_button("Zum Warenkorb hinzufügen")
-
-        if submit:
-            price = get_price_for_size(artikel, size)
-            total_price = price * qty
-
-            st.session_state.cart.append({
-                "name": name,
-                "team": team,
-                "nummer": nummer,
-                "artikel": artikel,
-                "size": size,
-                "qty": qty,
-                "price": price,
-                "line_total": total_price,
-                "additional_sizes": additional_sizes
-            })
-
-            st.session_state.customer_info = {"name": name, "team": team, "nummer": nummer}
-
-            additional_sizes = ""
-            qty = 1
-
-            st.success(f"{qty}× {artikel} hinzugefügt")
-
-# RIGHT: CART
-with right:
-    st.header("🛒 Warenkorb")
-
-    cart = st.session_state.cart
-    if not cart:
-        st.info("Noch keine Artikel im Warenkorb.")
+with st.form("add_item", clear_on_submit=True):
+    if not st.session_state.customer_info:
+        name = st.text_input("Name Spieler*in")
+        team = st.selectbox("Team", TEAMS)
+        nummer = st.text_input("Jerseynummer oder Initialen")
     else:
-        df = pd.DataFrame(cart)
-        st.dataframe(df, use_container_width=True)
+        name = st.text_input("Name Spieler*in", st.session_state.customer_info["name"])
+        team = st.selectbox("Team", TEAMS, index=TEAMS.index(st.session_state.customer_info["team"]))
+        nummer = st.text_input("Rückennummer / Initialen", st.session_state.customer_info["nummer"])
 
-        total = df["line_total"].sum()
-        st.subheader(f"Gesamtbetrag: {total:.2f} €")
-            
-        # CSV Offer
-        csv = df.to_csv(index=False).encode()
-        st.download_button("Angebot als CSV herunterladen", csv, "angebot.csv")
+    artikel = st.selectbox("Artikel / Paket", list(PRICES.keys()))
+    size = st.selectbox("Größe", SIZES)
+    qty = st.number_input("Menge", 1, step=1)
+    additional_sizes = st.text_area("Abweichende Größen & Extras", placeholder="z. B. Hose XXL, Extra Polo")
 
-        # PDF Invoice
-        if st.button("Rechnung als PDF erstellen"):
-            pdf = generate_invoice_pdf(cart, df["name"].iloc[0], df["team"].iloc[0])
-            st.download_button("PDF herunterladen", pdf, "Rechnung.pdf", mime="application/pdf")
+    submit = st.form_submit_button("➕ Zum Warenkorb hinzufügen")
 
-        st.markdown("---")
+    if submit:
+        price = get_price_for_size(artikel, size)
+        total_price = price * qty
 
-        # SEND TO GOOGLE SHEETS
-        if st.button("Bestellung absenden"):
-            rows = []
-            ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        st.session_state.cart.append({
+            "name": name,
+            "team": team,
+            "nummer": nummer,
+            "artikel": artikel,
+            "size": size,
+            "qty": qty,
+            "price": price,
+            "line_total": total_price,
+            "additional_sizes": additional_sizes
+        })
 
-            for i in cart:
-                rows.append([
-                    ts, i["name"], i["team"], i["nummer"],
-                    i["artikel"], i["size"],
-                    i["qty"], i["price"], i["line_total"], i["additional_sizes"]
-                ])
+        st.session_state.customer_info = {"name": name, "team": team, "nummer": nummer}
 
-            ok, err = append_orders_to_sheet(rows)
-            if ok:
-                st.success("Erfolgreich an Google Sheets übertragen!")
-                st.session_state.cart = []
-                st.session_state.customer_info = {}
-            else:
-                st.error(f"Google Sheets Fehler: {err}")
+        st.success(f"{qty}× {artikel} hinzugefügt!")
 
-        # LOCAL CSV FALLBACK
-        if st.button("Lokal speichern (CSV)"):
-            rows = []
-            ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            for i in cart:
-                rows.append([
-                    ts, i["name"], i["team"], i["nummer"],
-                    i["artikel"], i["size"],
-                    i["qty"], i["price"], i["line_total"], i["additional_sizes"]
-                ])
-            append_orders_to_csv(rows)
-            st.success("Lokal gespeichert (orders_local.csv).")
+
+# ---------------------------
+# MOBILE CART VIEW – CARD STYLE
+# ---------------------------
+st.subheader("🛒 Warenkorb")
+
+cart = st.session_state.cart
+
+if not cart:
+    st.info("Keine Artikel im Warenkorb.")
+else:
+    total = 0
+
+    for i, item in enumerate(cart):
+        st.markdown(
+            f"""
+            <div style="
+                background:#1A1A1A;
+                padding:15px;
+                border-radius:12px;
+                margin-bottom:12px;
+                border:1px solid #333;">
+                <b style='color:#F05323;'>{item['artikel']}</b><br>
+                Größe: {item['size']}<br>
+                Menge: {item['qty']}<br>
+                Einzelpreis: {item['price']} €<br>
+                <b>Summe: {item['line_total']} €</b><br>
+                <i>{item['additional_sizes']}</i>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        if st.button(f"❌ Entfernen", key=f"del_{i}", use_container_width=True):
+            st.session_state.cart.pop(i)
+            st.experimental_rerun()
+
+        total += item["line_total"]
+
+    st.subheader(f"**Gesamt: {total:.2f} €**")
+
+    st.markdown("---")
+
+    # CSV DOWNLOAD
+    df = pd.DataFrame(cart)
+    csv = df.to_csv(index=False).encode()
+    st.download_button("📦 Angebot als CSV", csv, "Angebot.csv", use_container_width=True)
+
+    # PDF
+    if st.button("📄 Rechnung als PDF", use_container_width=True):
+        pdf = generate_invoice_pdf(cart, df["name"].iloc[0], df["team"].iloc[0])
+        st.download_button("PDF herunterladen", pdf, "Rechnung.pdf", mime="application/pdf")
+
+    # SEND TO SHEETS
+    if st.button("📤 Bestellung absenden", use_container_width=True):
+        rows = []
+        ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        for i in cart:
+            rows.append([
+                ts, i["name"], i["team"], i["nummer"],
+                i["artikel"], i["size"],
+                i["qty"], i["price"], i["line_total"], i["additional_sizes"]
+            ])
+        ok, err = append_orders_to_sheet(rows)
+        if ok:
+            st.success("Bestellung übertragen!")
             st.session_state.cart = []
             st.session_state.customer_info = {}
+            st.experimental_rerun()
+        else:
+            st.error(f"Google Sheets Fehler: {err}")
 
+    if st.button("🗑️ Warenkorb leeren", use_container_width=True):
+        st.session_state.cart = []
+        st.experimental_rerun()
+
+
+# PAYMENT INFO
 st.markdown("""
-### Zahlungsinformationen
-💳 **PayPal:** [https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr](https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr)   
-Verwendungszweck: **Name und Team eintragen**
-
-Sollte was schieflaufen oder ihr besitzt kein Paypal bitte schreibt mich Leonard Kötter (Tel.: +49 173 6121352) an und wir finden eine Lösung
+### Zahlungsinformationen  
+💳 **PayPal:** https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr  
+Verwendungszweck: **Name + Team**  
+Bei Problemen: **Leonard Kötter – 0173 6121352**  
 """)
