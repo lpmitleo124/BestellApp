@@ -289,8 +289,7 @@ else:
         if ok:
             st.success("Bestellung übertragen!")
             st.session_state.cart = []
-            st.session_state.customer_info = {}
-            st.experimental_rerun()
+            st.session_state.customer_info = {}            
         else:
             st.error(f"Google Sheets Fehler: {err}")
 
