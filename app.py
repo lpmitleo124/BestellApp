@@ -135,8 +135,8 @@ def generate_invoice_pdf(cart, customer_name, team):
 
     story.append(Paragraph("<b>PayPal:</b> https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr", styles["Normal"]))
     story.append(Paragraph("<b>Verwendungszweck:</b> Name + Team", styles["Normal"]))
-	story.append(Paragraph("<b>Banküberweisung</b> Leonard Kötter IBAN: DE03 4007 0224 0667 3586 01", styles["Normal"]))
-	story.append(Paragraph("<b>Verwendungszweck:</b> Name + Team", styles["Normal"]))
+		story.append(Paragraph("<b>Banküberweisung</b> Leonard Kötter IBAN: DE03 4007 0224 0667 3586 01", styles["Normal"]))
+		story.append(Paragraph("<b>Verwendungszweck:</b> Name + Team", styles["Normal"]))
     story.append(Paragraph("<b>Bei Problemen:</b> Leonard Kötter – 0173 6121352", styles["Normal"]))
 
     doc.build(story)
