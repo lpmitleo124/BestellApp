@@ -99,6 +99,7 @@ def generate_invoice_pdf(cart, customer_name, team):
     styles = getSampleStyleSheet()
     story = []
 
+    # Header
     story.append(Paragraph("Rechnung Münster Phoenix", styles["Title"]))
     story.append(Spacer(1, 12))
     story.append(Paragraph(f"Datum: {datetime.now().strftime('%Y-%m-%d')}", styles["Normal"]))
@@ -106,6 +107,7 @@ def generate_invoice_pdf(cart, customer_name, team):
     story.append(Paragraph(f"Team: {team}", styles["Normal"]))
     story.append(Spacer(1, 18))
 
+    # Tabelle
     data = [["Artikel", "Größe", "Menge", "Einzelpreis (€)", "Summe (€)", "Zusätzliche Größen"]]
     total = 0
 
@@ -130,14 +132,33 @@ def generate_invoice_pdf(cart, customer_name, team):
         ("ALIGN", (2, 1), (-1, -1), "RIGHT"),
     ]))
 
-    
     story.append(table)
     story.append(Spacer(1, 20))
 
-    story.append(Paragraph("<b>PayPal:</b> https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr", styles["Normal"]))
-    story.append(Paragraph("<b>Verwendungszweck:</b> Name + Team", styles["Normal"]))
-    story.append(Paragraph("<b>Bei Problemen:</b> Leonard Kötter – 0173 6121352", styles["Normal"]))
-    
+    # Zahlungsinformationen
+    story.append(Paragraph("<b>Zahlungsinformationen</b>", styles["Heading3"]))
+    story.append(Spacer(1, 8))
+
+    story.append(Paragraph(
+        "<b>PayPal:</b> https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr"
+		"Verwendungszweck: Name und Team",
+        styles["Normal"]
+    ))
+
+    story.append(Paragraph(
+        "<b>Banküberweisung:</b><br/>"
+        "Empfänger: Leonard Kötter<br/>"
+        "IBAN: DE03 4007 0224 0667 3586 01<br/>"
+        "Verwendungszweck: Name und Team",
+        styles["Normal"]
+    ))
+
+    story.append(Spacer(1, 10))
+
+    story.append(Paragraph(
+        "<b>Bei Problemen:</b> Leonard Koetter (Tel. 0173 6121352)",
+        styles["Normal"]
+    ))
 
     doc.build(story)
     return buffer.getvalue()
