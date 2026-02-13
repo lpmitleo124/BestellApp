@@ -140,12 +140,6 @@ def generate_invoice_pdf(cart, customer_name, team):
     story.append(Spacer(1, 8))
 
     story.append(Paragraph(
-        "<b>PayPal:</b> https://www.paypal.com/pool/9kwYdJ6jNv?sr=wccr<br/>"
-		"Verwendungszweck: Name und Team",
-        styles["Normal"]
-    ))
-
-    story.append(Paragraph(
         "<b>Banküberweisung:</b><br/>"
         "Empfänger: Leonard Kötter<br/>"
         "IBAN: DE03 4007 0224 0667 3586 01<br/>"
