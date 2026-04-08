@@ -152,8 +152,8 @@ def generate_invoice_pdf(cart, customer_name, team):
     # ✅ Neuer PayPal-Paragraph
     story.append(Paragraph(
         "<b>PayPal:</b><br/>"
-        "PayPal-Link: <a href='https://paypal.me/DeinLink' color='blue'>paypal.me/DeinLink</a><br/>"
-        f"Verwendungszweck: {customer_name} – {team}",
+        "PayPal-Link: <a href='https://www.paypal.com/pool/9o9jcCCbCE?sr=wccr' color='blue'>https://www.paypal.com/pool/9o9jcCCbCE?sr=wccr</a><br/>"
+        f"Verwendungszweck: Name + Team",
         styles["Normal"]
     ))
 
