@@ -149,6 +149,15 @@ def generate_invoice_pdf(cart, customer_name, team):
 
     story.append(Spacer(1, 10))
 
+	story.append(Paragraph(
+        "<b>PayPal:</b><br/>"
+        "PayPal-Link: <a href='https://paypal.me/DeinLink' color='blue'>paypal.me/DeinLink</a><br/>"
+        f"Verwendungszweck: {customer_name} – {team}",
+        styles["Normal"]
+    ))
+
+    story.append(Spacer(1, 10))
+
     story.append(Paragraph(
         "<b>Bei Problemen:</b> Leonard Koetter (Tel. 0173 6121352)",
         styles["Normal"]
