@@ -314,7 +314,7 @@ else:
 # PAYMENT INFO
 st.markdown("""
 ### Zahlungsinformationen  
-💳 **Paypal:** https://www.paypal.com/pool/9o9jcCCbCE?sr=wccr
+💳 **Paypal:** https://www.paypal.com/pool/9o9jcCCbCE?sr=wccr  
 💳 **Banküberweisung:** Leonard Kötter IBAN: DE03 4007 0224 0667 3586 01    
 Verwendungszweck: **Name + Team**  
 Bei Problemen: **Leonard Kötter – 0173 6121352**  
