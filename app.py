@@ -147,13 +147,6 @@ def generate_invoice_pdf(cart, customer_name, team):
         styles["Normal"]
     ))
 
-	story.append(Paragraph(
-        "<b>Paypal:</b><br/>"
-        "https://www.paypal.com/pool/9o9jcCCbCE?sr=wccr<br/>"
-        "Verwendungszweck: Name und Team",
-        styles["Normal"]
-    ))
-
     story.append(Spacer(1, 10))
 
     story.append(Paragraph(
