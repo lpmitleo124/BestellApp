@@ -151,8 +151,8 @@ def generate_invoice_pdf(cart, customer_name, team):
 
     story.append(Paragraph(
         "<b>Banküberweisung:</b><br/>"
-        "Empfänger: empfänger<br/>"
-        "IBAN: Verbindung<br/>"
+        "Empfänger: Leonard Kötter<br/>"
+        "IBAN: DE03 4007 0224 0667 3586 01<br/>"
         "Verwendungszweck: Name und Team",
         styles["Normal"]
     ))
@@ -356,8 +356,8 @@ else:
 # PAYMENT INFO
 st.markdown("""
 ### Zahlungsinformationen  
-💳 **Paypal:** Paypal link  
-💳 **Banküberweisung:** Leonard Kötter IBAN: (BANK)    
+💳 **Paypal:**   
+💳 **Banküberweisung:** Leonard Kötter IBAN: DE03 4007 0224 0667 3586 01    
 Verwendungszweck: **Name + Team**  
-Bei Problemen: **Kontakt**  
+Bei Problemen: **Leonard Kötter 01736121352**  
 """)
