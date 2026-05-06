@@ -54,6 +54,12 @@ def get_price_for_size(artikel, size):
     return xxl if size in ["3XL", "4XL", "5XL"] else base
 
 
+# ✅ NEU: Warenkorb leeren
+def clear_cart():
+    st.session_state.cart = []
+    st.session_state.customer_info = {}
+
+
 def connect_to_sheet(sheet_name="Teamwear_Bestellungen"):
     creds_info = st.secrets["gcp_service_account"]
 
@@ -141,15 +147,14 @@ def generate_invoice_pdf(cart, customer_name, team):
 
     story.append(Paragraph(
         "<b>Banküberweisung:</b><br/>"
-        "Empfänger: Leonard Kötter<br/>"
-        "IBAN: DE03 4007 0224 0667 3586 01<br/>"
+        "Empfänger: empfänger<br/>"
+        "IBAN: Verbindung<br/>"
         "Verwendungszweck: Name und Team",
         styles["Normal"]
     ))
 
     story.append(Spacer(1, 10))
 
-    # ✅ Neuer PayPal-Paragraph
     story.append(Paragraph(
         "<b>PayPal:</b><br/>"
         "PayPal-Link: <a href='https://www.paypal.com/pool/9o9jcCCbCE?sr=wccr' color='blue'>https://www.paypal.com/pool/9o9jcCCbCE?sr=wccr</a><br/>"
@@ -195,7 +200,7 @@ st.markdown(
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
 #### Paketbestellungen: Abweichende Größen und Extras 
-Bitte nutzt das Kommentarfeld „Abweichende Größen und Extras“, wenn etwas vom Standard abweicht.
+Bitte nutzt das Kommentarfeld „Abweichende Größen und Extras", wenn etwas vom Standard abweicht.
 - Abweichende Größen: Wenn einzelne Artikel von eurer Hauptgröße abweichen, gebt Artikel + gewünschte Größe an.
 
 	- Beispiel: Paket in 3XL, Hose in XXL → "Jogginghose XXL" eintragen  
@@ -206,7 +211,7 @@ Bitte nutzt das Kommentarfeld „Abweichende Größen und Extras“, wenn etwas 
 Tipp: Pro Wunsch eine eigene Zeile und klare Bezeichnungen verwenden.
 Ihr müsst für jeden Artikel alles Neu eintragen. Geht um die Übersichtlichkeit.  
 
-Seid ihr fertig, dann klickt auf „Bestellung absenden“.  
+Seid ihr fertig, dann klickt auf „Bestellung absenden".  
 Anschließend überweist mir bitte den fälligen Betrag.
 
 Bei Fragen meldet euch gern:
@@ -292,6 +297,19 @@ else:
 
     st.markdown("---")
 
+    # ✅ NEU: Warenkorb leeren – mit Sicherheitsabfrage
+    st.markdown("#### ⚠️ Warenkorb leeren")
+    confirm_clear = st.checkbox("Ja, ich möchte den gesamten Warenkorb löschen.")
+    if st.button("🗑️ Warenkorb leeren", use_container_width=True, type="secondary"):
+        if confirm_clear:
+            clear_cart()
+            st.success("Warenkorb wurde geleert.")
+            st.rerun()
+        else:
+            st.warning("Bitte zuerst die Checkbox bestätigen.")
+
+    st.markdown("---")
+
     # CSV DOWNLOAD
     df = pd.DataFrame(cart)
     csv = df.to_csv(index=False).encode()
@@ -316,7 +334,7 @@ else:
         if ok:
             st.success("Bestellung übertragen!")
             st.session_state.cart = []
-            st.session_state.customer_info = {}            
+            st.session_state.customer_info = {}
         else:
             st.error(f"Google Sheets Fehler: {err}")
 
@@ -324,8 +342,8 @@ else:
 # PAYMENT INFO
 st.markdown("""
 ### Zahlungsinformationen  
-💳 **Paypal:** https://www.paypal.com/pool/9o9jcCCbCE?sr=wccr  
-💳 **Banküberweisung:** Leonard Kötter IBAN: DE03 4007 0224 0667 3586 01    
+💳 **Paypal:** Paypal link  
+💳 **Banküberweisung:** Leonard Kötter IBAN: (BANK)    
 Verwendungszweck: **Name + Team**  
-Bei Problemen: **Leonard Kötter – 0173 6121352**  
+Bei Problemen: **Kontakt**  
 """)
