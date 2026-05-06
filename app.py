@@ -54,10 +54,17 @@ def get_price_for_size(artikel, size):
     return xxl if size in ["3XL", "4XL", "5XL"] else base
 
 
-# ✅ NEU: Warenkorb leeren
 def clear_cart():
     st.session_state.cart = []
     st.session_state.customer_info = {}
+
+
+# ✅ NEU: Einzelnen Artikel per Index entfernen
+def remove_item(index):
+    st.session_state.cart.pop(index)
+    # Falls Warenkorb danach leer ist, auch Kundendaten zurücksetzen
+    if not st.session_state.cart:
+        st.session_state.customer_info = {}
 
 
 def connect_to_sheet(sheet_name="Teamwear_Bestellungen"):
@@ -105,7 +112,6 @@ def generate_invoice_pdf(cart, customer_name, team):
     styles = getSampleStyleSheet()
     story = []
 
-    # Header
     story.append(Paragraph("Rechnung Münster Phoenix", styles["Title"]))
     story.append(Spacer(1, 12))
     story.append(Paragraph(f"Datum: {datetime.now().strftime('%Y-%m-%d')}", styles["Normal"]))
@@ -113,7 +119,6 @@ def generate_invoice_pdf(cart, customer_name, team):
     story.append(Paragraph(f"Team: {team}", styles["Normal"]))
     story.append(Spacer(1, 18))
 
-    # Tabelle
     data = [["Artikel", "Größe", "Menge", "Einzelpreis (€)", "Summe (€)", "Zusätzliche Größen"]]
     total = 0
 
@@ -141,7 +146,6 @@ def generate_invoice_pdf(cart, customer_name, team):
     story.append(table)
     story.append(Spacer(1, 20))
 
-    # Zahlungsinformationen
     story.append(Paragraph("<b>Zahlungsinformationen</b>", styles["Heading3"]))
     story.append(Spacer(1, 8))
 
@@ -158,7 +162,7 @@ def generate_invoice_pdf(cart, customer_name, team):
     story.append(Paragraph(
         "<b>PayPal:</b><br/>"
         "PayPal-Link: <a href='https://www.paypal.com/pool/9o9jcCCbCE?sr=wccr' color='blue'>https://www.paypal.com/pool/9o9jcCCbCE?sr=wccr</a><br/>"
-        f"Verwendungszweck: Name + Team",
+        "Verwendungszweck: Name + Team",
         styles["Normal"]
     ))
 
@@ -178,7 +182,6 @@ def generate_invoice_pdf(cart, customer_name, team):
 # ---------------------------
 st.set_page_config(page_title="Phoenix Teamwear", layout="centered")
 
-# LOGO
 st.image("Münster_Phoenix_Logo_RGB.svg", width=160)
 st.markdown("<h1 style='text-align:center;'> Münster Phoenix – Teamwear</h1>", unsafe_allow_html=True)
 
@@ -195,7 +198,7 @@ if "customer_info" not in st.session_state:
 # ---------------------------
 st.subheader("Neue Bestellung")
 st.markdown(
-        """
+    """
 ## Anleitung
 Tragt hier alle Artikel ein, die ihr bestellen möchtet. 
 
@@ -217,8 +220,8 @@ Anschließend überweist mir bitte den fälligen Betrag.
 Bei Fragen meldet euch gern:
 **Leonard Kötter, +49 173 6121352** 
 """,
-        unsafe_allow_html=True
-    )
+    unsafe_allow_html=True
+)
 
 
 with st.form("add_item", clear_on_submit=True):
@@ -255,7 +258,6 @@ with st.form("add_item", clear_on_submit=True):
         })
 
         st.session_state.customer_info = {"name": name, "team": team, "nummer": nummer}
-
         st.success(f"{qty}× {artikel} hinzugefügt!")
 
 
@@ -272,13 +274,14 @@ else:
     total = 0
 
     for i, item in enumerate(cart):
+        # Artikel-Karte
         st.markdown(
             f"""
             <div style="
                 background:#1A1A1A;
                 padding:15px;
                 border-radius:12px;
-                margin-bottom:12px;
+                margin-bottom:6px;
                 border:1px solid #333;">
                 <b style='color:#F05323;'>{item['artikel']}</b><br>
                 Größe: {item['size']}<br>
@@ -291,13 +294,24 @@ else:
             unsafe_allow_html=True
         )
 
+        # ✅ NEU: Entfernen-Button direkt unter jeder Karte
+        # Eindeutiger key über den Index, damit Streamlit die Buttons unterscheiden kann
+        if st.button(
+            f"❌ {item['artikel']} (Gr. {item['size']}) entfernen",
+            key=f"remove_{i}",
+            use_container_width=True,
+            type="secondary"
+        ):
+            remove_item(i)
+            st.rerun()
+
         total += item["line_total"]
 
     st.subheader(f"**Gesamt: {total:.2f} €**")
 
     st.markdown("---")
 
-    # ✅ NEU: Warenkorb leeren – mit Sicherheitsabfrage
+    # Warenkorb leeren – mit Sicherheitsabfrage
     st.markdown("#### ⚠️ Warenkorb leeren")
     confirm_clear = st.checkbox("Ja, ich möchte den gesamten Warenkorb löschen.")
     if st.button("🗑️ Warenkorb leeren", use_container_width=True, type="secondary"):
